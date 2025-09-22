@@ -1,0 +1,120 @@
+extends Node
+
+var server_info = {
+	name = "Server",
+	max_players = 0,
+	used_port = 0
+}
+
+signal server_created
+signal join_success
+signal join_fail
+
+func create_server():
+	var peer = ENetMultiplayerPeer.new()
+	var error = peer.create_server(server_info.used_port, server_info.max_players)
+	if error:
+		return error
+		
+	multiplayer.multiplayer_peer = peer
+	emit_signal("server_created")
+	emit_signal("join_success")
+	
+func join_server(ip, port):
+	var peer = ENetMultiplayerPeer.new()
+	var error = peer.create_client(ip, port)
+	if error:
+		return error
+	multiplayer.multiplayer_peer = peer
+
+# Peer trying to connect to server is notified on success
+func _on_connected_to_server():
+	emit_signal("join_success")
+	
+# Everyone gets notified whenever a new client joins the server
+func _on_player_connected(id):
+	if !game_state.players.has(id):
+		print("new connection: " + str(id) + " .. pending data")
+
+# RPC to update a specific player's data
+@rpc("any_peer", "call_local", "reliable") 
+func _register_self(player_data):
+	var sender_id = multiplayer.get_remote_sender_id()
+	game_state.players[sender_id] = player_data
+	print("registered player: ", sender_id, ": ", player_data)
+	if multiplayer.is_server():
+		rpc("_update_player_list", game_state.players)
+		print("sent updated player list to others")
+		rpc("_spawn_character", sender_id)
+		
+		print("sending existing objects to new connection")
+		rpc_id(sender_id, "_add_existing_objects", game_state.game_objects)
+
+@rpc("authority", "call_remote", "reliable")
+func _add_existing_objects(required):
+	for key in required.keys():
+		if game_state.game_objects.has(key):
+			continue
+		var id = key
+		print("spawning existing character for " + str(id))
+	
+		var character = preload("res://game/character.tscn")
+		var inst = character.instantiate() as Node3D
+		inst.id = id
+		inst.name = game_state.players[id].name
+		while not client.loaded:
+			await client.get_tree().process_frame
+		client.world.add_child(inst)
+		inst.get_node("CharacterBody3D").transform = required.get(key).get("transform")
+		game_state.game_objects.set(inst.id, {"transform" = required.get(key).get("transform")})
+
+
+@rpc("authority", "call_local", "reliable")
+func _spawn_character(id):
+	print("spawning character for " + str(id))
+	
+	var character = preload("res://game/character.tscn")
+	var inst = character.instantiate() as Node3D
+	#inst.get_node("CharacterBody3D").character.id = id
+	inst.id = id
+	inst.name = game_state.players[id].name
+	# This character will appear on all clients
+	
+	while not client.loaded:
+		await client.get_tree().process_frame
+	client.world.add_child(inst)
+	inst.get_node("CharacterBody3D").transform = client.world.get_node("spawn").transform
+	game_state.game_objects.set(inst.id, {"transform" = inst.get_node("CharacterBody3D").transform})
+	#client.spawn_character()
+
+@rpc("authority", "call_local", "reliable")
+func _update_player_list(all_players):
+	game_state.players = all_players
+	print("received player list: ", game_state.players)
+	
+# Everyone gets notified whenever someone disconnects from the server
+func _on_player_disconnected(id):
+	print(str(id) + " disconnected from the game")
+	game_state.players.erase(id)
+	rpc("_remove_player", id)
+
+@rpc("any_peer", "call_local", "reliable")
+func _remove_player(player_id):
+	if game_state.game_objects.has(player_id):
+		game_state.game_objects.erase(player_id)
+	game_state.players.erase(player_id)
+
+# Peer trying to connect to server is notified on failure
+func _on_connection_failed():
+	emit_signal("join_fail")
+	multiplayer.multiplayer_peer = null
+
+func _on_disconnected_from_server():
+	game_state.players.clear()
+
+func _ready():
+	multiplayer.connect("peer_connected", Callable(self, "_on_player_connected"))
+	multiplayer.connect("peer_disconnected", Callable(self, "_on_player_disconnected"))
+	multiplayer.connect("connected_to_server", Callable(self, "_on_connected_to_server"))
+	multiplayer.connect("connection_failed", Callable(self, "_on_connection_failed"))
+	multiplayer.connect("server_disconnected", Callable(self, "_on_disconnected_from_server"))

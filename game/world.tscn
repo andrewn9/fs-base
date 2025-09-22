@@ -1,0 +1,40 @@
+[gd_scene load_steps=6 format=3 uid="uid://pm7bbtq72irj"]
+
+[ext_resource type="PackedScene" uid="uid://bqnh7espkihvs" path="res://game/map.tscn" id="1_f3sb7"]
+[ext_resource type="Script" uid="uid://4mfbowtxi056" path="res://game/world.gd" id="1_tlwt5"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_c6gwx"]
+sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+
+[sub_resource type="Sky" id="Sky_2dftf"]
+sky_material = SubResource("ProceduralSkyMaterial_c6gwx")
+
+[sub_resource type="Environment" id="Environment_bcbcq"]
+background_mode = 2
+sky = SubResource("Sky_2dftf")
+tonemap_mode = 2
+glow_enabled = true
+
+[node name="World" type="Node"]
+script = ExtResource("1_tlwt5")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_bcbcq")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+shadow_enabled = true
+
+[node name="map" parent="." instance=ExtResource("1_f3sb7")]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+follow_viewport_enabled = true
+
+[node name="Label" type="Label" parent="CanvasLayer"]
+offset_right = 40.0
+offset_bottom = 23.0
+text = "id:"
+
+[node name="spawn" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1012082, 0)

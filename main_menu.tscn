@@ -1,0 +1,213 @@
+[gd_scene load_steps=3 format=3 uid="uid://cdfssaxha5tn3"]
+
+[ext_resource type="Texture2D" uid="uid://dal6frdoee4o2" path="res://icon.svg" id="1_06t4h"]
+[ext_resource type="Script" uid="uid://bikau5dyeupqa" path="res://MainMenu.cs" id="1_7vrkn"]
+
+[node name="MainMenu" type="CanvasLayer"]
+script = ExtResource("1_7vrkn")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="BoxContainer" type="BoxContainer" parent="Control"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -336.0
+offset_top = -171.5
+offset_right = 336.0
+offset_bottom = 171.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PanelPlayer" type="Panel" parent="Control/BoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="txtPlayerName" type="LineEdit" parent="Control/BoxContainer/PanelPlayer"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.120000005
+anchor_bottom = 0.20400001
+offset_left = 61.0
+offset_top = -3.5805626
+offset_right = 202.0
+offset_bottom = -1.3925629
+placeholder_text = "enter username"
+context_menu_enabled = false
+emoji_menu_enabled = false
+
+[node name="PlayerIcon" type="Sprite2D" parent="Control/BoxContainer/PanelPlayer"]
+visible = false
+position = Vector2(36, 53.579437)
+scale = Vector2(0.31689453, 0.31374133)
+texture = ExtResource("1_06t4h")
+
+[node name="btColor" type="ColorPicker" parent="Control/BoxContainer/PanelPlayer"]
+visible = false
+layout_mode = 0
+offset_left = 26.0
+offset_top = 88.5
+offset_right = 324.0
+offset_bottom = 415.5
+scale = Vector2(0.575, 0.575)
+edit_alpha = false
+edit_intensity = false
+picker_shape = 2
+can_add_swatches = false
+color_modes_visible = false
+sliders_visible = false
+presets_visible = false
+
+[node name="btDefaultColor" type="Button" parent="Control/BoxContainer/PanelPlayer"]
+visible = false
+layout_mode = 0
+offset_left = 38.0
+offset_top = 291.5
+offset_right = 176.0
+offset_bottom = 322.5
+text = "default"
+
+[node name="PanelHost" type="Panel" parent="Control/BoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="txtServerName" type="LineEdit" parent="Control/BoxContainer/PanelHost"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.120000005
+anchor_bottom = 0.20400001
+offset_left = 19.0
+offset_top = 16.34
+offset_right = 170.0
+offset_bottom = 18.528
+text = "my server"
+placeholder_text = "enter name"
+context_menu_enabled = false
+emoji_menu_enabled = false
+
+[node name="Label" type="Label" parent="Control/BoxContainer/PanelHost"]
+layout_mode = 0
+offset_left = 21.0
+offset_top = 28.5
+offset_right = 118.0
+offset_bottom = 51.5
+text = "server name"
+
+[node name="txtServerPort" type="LineEdit" parent="Control/BoxContainer/PanelHost"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.120000005
+anchor_bottom = 0.20400001
+offset_left = 19.0
+offset_top = 91.34
+offset_right = 170.0
+offset_bottom = 93.528
+text = "4546"
+placeholder_text = "enter port"
+context_menu_enabled = false
+emoji_menu_enabled = false
+
+[node name="Label2" type="Label" parent="Control/BoxContainer/PanelHost"]
+layout_mode = 0
+offset_left = 21.0
+offset_top = 103.5
+offset_right = 118.0
+offset_bottom = 126.5
+text = "port"
+
+[node name="txtMaxPlayers" type="SpinBox" parent="Control/BoxContainer/PanelHost"]
+layout_mode = 0
+offset_left = 21.0
+offset_top = 210.5
+offset_right = 107.5625
+offset_bottom = 241.5
+min_value = 2.0
+max_value = 16.0
+value = 2.0
+
+[node name="Label3" type="Label" parent="Control/BoxContainer/PanelHost"]
+layout_mode = 0
+offset_left = 21.0
+offset_top = 181.5
+offset_right = 118.0
+offset_bottom = 204.5
+text = "max players"
+
+[node name="create" type="Button" parent="Control/BoxContainer/PanelHost"]
+layout_mode = 0
+offset_left = 35.0
+offset_top = 272.5
+offset_right = 190.0
+offset_bottom = 304.5
+text = "create"
+
+[node name="PanelJoin" type="Panel" parent="Control/BoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="txtJoinIP" type="LineEdit" parent="Control/BoxContainer/PanelJoin"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.120000005
+anchor_bottom = 0.20400001
+offset_left = 19.0
+offset_top = 16.34
+offset_right = 170.0
+offset_bottom = 18.528
+text = "127.0.0.1"
+placeholder_text = "enter ip"
+context_menu_enabled = false
+emoji_menu_enabled = false
+
+[node name="Label" type="Label" parent="Control/BoxContainer/PanelJoin"]
+layout_mode = 0
+offset_left = 21.0
+offset_top = 28.5
+offset_right = 118.0
+offset_bottom = 51.5
+text = "ip"
+
+[node name="txtJoinPort" type="LineEdit" parent="Control/BoxContainer/PanelJoin"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.120000005
+anchor_bottom = 0.20400001
+offset_left = 19.0
+offset_top = 91.34
+offset_right = 170.0
+offset_bottom = 93.528
+text = "4546"
+placeholder_text = "enter port"
+context_menu_enabled = false
+emoji_menu_enabled = false
+
+[node name="Label2" type="Label" parent="Control/BoxContainer/PanelJoin"]
+layout_mode = 0
+offset_left = 21.0
+offset_top = 103.5
+offset_right = 118.0
+offset_bottom = 126.5
+text = "port"
+
+[node name="join" type="Button" parent="Control/BoxContainer/PanelJoin"]
+layout_mode = 0
+offset_left = 35.0
+offset_top = 272.5
+offset_right = 190.0
+offset_bottom = 304.5
+text = "join"
+
+[connection signal="text_changed" from="Control/BoxContainer/PanelPlayer/txtPlayerName" to="." method="_OnTxtPlayerNameTextChanged"]
+[connection signal="pressed" from="Control/BoxContainer/PanelHost/create" to="." method="_OnCreatePressed"]
+[connection signal="pressed" from="Control/BoxContainer/PanelJoin/join" to="." method="_OnJoinPressed"]

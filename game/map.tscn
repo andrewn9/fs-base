@@ -1,0 +1,16 @@
+[gd_scene load_steps=4 format=3 uid="uid://bqnh7espkihvs"]
+
+[ext_resource type="PackedScene" uid="uid://cceaaul5786oa" path="res://blend/map.blend" id="1_c7s6e"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wijl4"]
+albedo_color = Color(0.13682577, 0.13682574, 0.13682571, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_c7s6e"]
+albedo_color = Color(0.704039, 0.4481144, 0.26459417, 1)
+
+[node name="map" instance=ExtResource("1_c7s6e")]
+
+[node name="Cube" parent="." index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.13398838, 0.024790287, -0.08863044)
+surface_material_override/0 = SubResource("StandardMaterial3D_wijl4")
+surface_material_override/1 = SubResource("StandardMaterial3D_c7s6e")

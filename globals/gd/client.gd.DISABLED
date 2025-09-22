@@ -1,0 +1,48 @@
+extends Node
+
+var client_info = {
+	name = "",
+	id = 0
+}
+
+var world: Node
+var id
+var loaded = false
+var extra = ""
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	network.connect("join_success", Callable(self, "_on_join"))
+
+func _on_join() -> void:
+	print("Connected. Sending required data")
+	client_info.id = multiplayer.get_unique_id()
+	if client_info.name.is_empty():
+		client_info.name = "Player" + str(client_info.id)
+	network.rpc("_register_self", client_info)
+	
+	var world_scene = load("res://game/world.tscn")
+	var tree = get_tree()
+	var scene_changed = tree.scene_changed
+	tree.change_scene_to_packed(world_scene)
+	await scene_changed
+	world = tree.current_scene	
+	loaded = true
+
+func spawn_character() -> void:
+	#while not loaded:
+		#await get_tree().process_frame
+#
+	#var character = load("res://game/character.tscn")
+	#var inst = character.instantiate()
+	#world.add_child(inst)
+	pass
+	
+func _process(delta: float) -> void:
+	if not loaded:
+		return
+	var label = world.get_node("CanvasLayer/Label")
+	label.text = client_info.name + ".." + str(multiplayer.get_unique_id())
+	label.text += "\n" + str(game_state.players)
+	label.text += "\n" + extra
+	label.text += "\n\n\n\n" + str(game_state.game_objects)
