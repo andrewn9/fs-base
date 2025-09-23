@@ -6,9 +6,10 @@ public partial class Client : Node
     public Node World;
     public bool Loaded = false;
 
-    // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
+        DisplayServer.WindowSetVsyncMode(DisplayServer.VSyncMode.Mailbox);
+
         var network = GetNode<Network>("/root/Network");
         network.JoinSuccess += _OnJoin;
     }
