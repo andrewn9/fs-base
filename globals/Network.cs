@@ -74,8 +74,8 @@ public partial class Network : Node
 
             ObjectDefinition def = new ObjectDefinition
             {
-                objectType = Globals.Classes.ObjectType.Player,
-                objectId = senderId,
+                ObjectType = Globals.Classes.ObjectType.Player,
+                ObjectId = senderId,
                 Transform = new Transform3D(Basis.Identity, Vector3.Up * 2)
             };
 

@@ -1,7 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://pm7bbtq72irj"]
+[gd_scene load_steps=9 format=3 uid="uid://pm7bbtq72irj"]
 
 [ext_resource type="PackedScene" uid="uid://bqnh7espkihvs" path="res://game/map.tscn" id="1_f3sb7"]
 [ext_resource type="Script" uid="uid://4mfbowtxi056" path="res://game/world.gd" id="1_tlwt5"]
+[ext_resource type="PackedScene" uid="uid://delu2qjrw6teu" path="res://ext/addons/Mirror3D/Mirror3D.tscn" id="3_tvmmn"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_c6gwx"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -15,6 +16,11 @@ background_mode = 2
 sky = SubResource("Sky_2dftf")
 tonemap_mode = 2
 glow_enabled = true
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_4kaam"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_4xpgs"]
+noise = SubResource("FastNoiseLite_4kaam")
 
 [node name="World" type="Node"]
 script = ExtResource("1_tlwt5")
@@ -39,3 +45,10 @@ autowrap_mode = 1
 
 [node name="spawn" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1012082, 0)
+
+[node name="Mirror3D1" parent="." instance=ExtResource("3_tvmmn")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.0272931, 1.9669573, -7.5233707)
+size = Vector2(10.42, 3.475)
+pixels_per_unit = 75
+distortion_texture = SubResource("NoiseTexture2D_4xpgs")
+max_fps = 60.0

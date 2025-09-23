@@ -43,7 +43,7 @@ public partial class Client : Node
         // var inst = character.Instantiate();
         // world.AddChild(inst);
         // Currently empty - pass
-        if (objDef.objectType == Globals.Classes.ObjectType.Player)
+        if (objDef.ObjectType == Globals.Classes.ObjectType.Player)
         {
             GD.Print($"spawning character {id}");
 

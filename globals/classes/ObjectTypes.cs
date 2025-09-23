@@ -4,14 +4,14 @@ namespace Globals.Classes
     {
         Player,
         Enemy,
-        NPC,
+        Npc,
         Item,
         Obstacle,
         Projectile,
         Environment,
         Unknown
     }
-
+    
     public enum NetworkAuthority
     {
         Server,

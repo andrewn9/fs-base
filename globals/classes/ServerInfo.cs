@@ -14,9 +14,9 @@ public class ServerInfo
 
     public ServerInfo(string name, int maxPlayers, int usedPort)
     {
-        Name = name;
-        MaxPlayers = maxPlayers;
-        UsedPort = usedPort;
+        Name = name ?? "Server";
+        MaxPlayers = maxPlayers >= 0 ? maxPlayers : 0;
+        UsedPort = usedPort > 0 ? usedPort : 0;
     }
 
     // Convert to Dictionary for network transmission
@@ -30,18 +30,16 @@ public class ServerInfo
         };
     }
 
-    // Create from Dictionary received from network
     public static ServerInfo Deserialize(Dictionary dict)
     {
         return new ServerInfo
-        {
-            Name = dict["name"].AsString(),
-            MaxPlayers = dict["max_players"].AsInt32(),
-            UsedPort = dict["used_port"].AsInt32()
-        };
+        (
+            dict["name"].AsString(),
+            dict["max_players"].AsInt32(),
+            dict["used_port"].AsInt32()
+        );
     }
 
-    // For easy debugging
     public override string ToString()
     {
         return $"ServerInfo(Name: {Name}, MaxPlayers: {MaxPlayers}, Port: {UsedPort})";

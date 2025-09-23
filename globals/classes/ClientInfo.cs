@@ -1,15 +1,26 @@
 using Godot;
 using Godot.Collections;
 
-[System.Serializable]
+using System;
+[Serializable]
 public class ClientInfo
 {
-    public string Name { get; set; } = "Unknown";
-    public long Id { get; set; } = 0;
+    private string _name = "Unknown";
+    private long _id = 0;
 
-    public ClientInfo()
+    public string Name
     {
+        get => _name;
+        set => _name = value ?? "Unknown";
     }
+
+    public long Id
+    {
+        get => _id;
+        set => _id = value >= 0 ? value : 0;
+    }
+
+    public ClientInfo() { }
 
     public ClientInfo(string name, long id)
     {

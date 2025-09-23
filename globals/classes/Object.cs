@@ -2,7 +2,14 @@ using Godot;
 
 public partial class Object : Node3D
 {
-    public ObjectDefinition Definition { get; set; }
+    private ObjectDefinition _definition;
+
+    public ObjectDefinition Definition
+    {
+        get => _definition;
+        set => _definition = value ?? new ObjectDefinition();
+    }
+
     public virtual void LoadDefinition()
     {
         if (Definition != null)

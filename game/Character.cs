@@ -32,7 +32,7 @@ public partial class Character : Object
         animationPlayer = GetNode<AnimationPlayer>("CharacterBody3D/model/AnimationPlayer");
         movement = controller as Movement;
         var client = GetNode<Client>("/root/Client");
-        if (Definition != null && Definition.objectId == client.clientInfo.Id)
+        if (Definition != null && Definition.ObjectId == client.clientInfo.Id)
         {
             Input.MouseMode = Input.MouseModeEnum.Captured;
         }
@@ -47,7 +47,7 @@ public partial class Character : Object
         float minInterval = 1f / MaxInputSendsPerSecond;
 
         // Always process local input immediately
-        if (Definition != null && Definition.objectId == Multiplayer.GetUniqueId())
+        if (Definition != null && Definition.ObjectId == Multiplayer.GetUniqueId())
         {
             ReceiveInput(moveDir, lookVec);
         }
@@ -89,7 +89,7 @@ public partial class Character : Object
             Definition.Transform = controller.GlobalTransform;
         }
         GameState gameState = GetNode<GameState>("/root/GameState");
-        gameState.GameObjects[Definition.objectId] = Definition.Serialize();
+        gameState.GameObjects[Definition.ObjectId] = Definition.Serialize();
     }
 
     public override void _UnhandledInput(InputEvent @event)
@@ -119,7 +119,7 @@ public partial class Character : Object
         }
 
 
-        if (Definition.objectId != Multiplayer.GetUniqueId())
+        if (Definition.ObjectId != Multiplayer.GetUniqueId())
         {
             return;
         }
@@ -147,7 +147,7 @@ public partial class Character : Object
         if (_rpcTimer >= RpcInterval)
         {
             // GD.Print("Sent update");
-            network.Rpc(nameof(UpdateDefinition), Definition.objectId, Definition.Serialize());
+            network.Rpc(nameof(UpdateDefinition), Definition.ObjectId, Definition.Serialize());
             _rpcTimer = 0f;
         }
     }
