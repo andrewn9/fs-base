@@ -4,6 +4,7 @@ public partial class Character : Object
 {
     public CharacterBody3D controller;
     public Movement movement;
+    public AnimationPlayer animationPlayer;
 
     // Input replication struct
     public struct PlayerInput
@@ -28,6 +29,7 @@ public partial class Character : Object
     public override void _Ready()
     {
         controller = GetNode<CharacterBody3D>("CharacterBody3D");
+        animationPlayer = GetNode<AnimationPlayer>("CharacterBody3D/model/AnimationPlayer");
         movement = controller as Movement;
         var client = GetNode<Client>("/root/Client");
         if (Definition != null && Definition.objectId == client.clientInfo.Id)
@@ -101,6 +103,22 @@ public partial class Character : Object
 
     public override void _Process(double delta)
     {
+        if ((movement).Velocity.Length() > 0.1f)
+        {
+            if (!animationPlayer.IsPlaying() || animationPlayer.CurrentAnimation != "Run")
+            {
+                animationPlayer.Play("Run");
+            }
+        }
+        else
+        {
+            if (!animationPlayer.IsPlaying() || animationPlayer.CurrentAnimation != "Idle")
+            {
+                animationPlayer.Play("Idle");
+            }
+        }
+
+
         if (Definition.objectId != Multiplayer.GetUniqueId())
         {
             return;

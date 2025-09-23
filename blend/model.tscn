@@ -3,3 +3,20 @@
 [ext_resource type="PackedScene" uid="uid://ctl2gicb6aq3w" path="res://blend/character.blend" id="1_047ie"]
 
 [node name="character" instance=ExtResource("1_047ie")]
+
+[node name="Skeleton3D" parent="." index="0"]
+bones/6/rotation = Quaternion(0.010505861, 0.064604454, 0.9973796, -0.030820752)
+bones/7/rotation = Quaternion(-0.11807511, -0.0024923477, -0.029989207, 0.9925486)
+bones/8/rotation = Quaternion(0.6995394, 0.011959064, -0.008614462, 0.714442)
+bones/11/rotation = Quaternion(-0.010505685, 0.06460423, 0.9973796, 0.030820742)
+bones/11/scale = Vector3(0.99999803, 0.9999997, 0.9999883)
+bones/12/rotation = Quaternion(-0.11807501, 0.002492298, 0.029989053, 0.99254864)
+bones/13/rotation = Quaternion(0.6995397, -0.0119587, 0.008614334, 0.7144418)
+bones/15/position = Vector3(-0.075171866, -0.28879577, 0.0015263893)
+bones/15/rotation = Quaternion(0.70710665, -0.00047333405, -0.00047305392, 0.70710665)
+bones/16/position = Vector3(0.07494567, -0.12513697, -0.23117475)
+bones/17/position = Vector3(0.075171866, -0.28879577, 0.0015264121)
+bones/17/rotation = Quaternion(0.70710665, 0.00047305392, 0.00047333405, 0.70710665)
+
+[node name="AnimationPlayer" parent="." index="1"]
+speed_scale = 1.725
