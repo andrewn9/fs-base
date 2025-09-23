@@ -3,85 +3,92 @@ using Godot;
 public partial class Movement : CharacterBody3D
 {
     private Camera3D camera;
-
     private const float Speed = 5.0f;
     private const float JumpVelocity = 4.5f;
-
     private bool controlled = false;
+    private Vector3 _lookVector = Vector3.Zero;
+    public Vector3 LookVector
+    {
+        get => _lookVector;
+        set
+        {
+            _lookVector = value;
+            // Clamp pitch
+            _lookVector.X = Mathf.Clamp(_lookVector.X, -Mathf.Pi / 2, Mathf.Pi / 2);
+            // Apply rotations
+            Rotation = new Vector3(Rotation.X, _lookVector.Y, Rotation.Z);
+            camera.Rotation = new Vector3(_lookVector.X, camera.Rotation.Y, camera.Rotation.Z);
+        }
+    }
 
     public override void _Ready()
     {
         camera = GetNode<Camera3D>("Camera3D");
-
         var client = GetNode<Client>("/root/Client");
         var parentNode = GetParent<Character>();
         var clientId = client.clientInfo.Id;
-
-        controlled = parentNode.Definition.ObjectId == clientId;
-
-        if (controlled)
-        {
-            camera.Current = true;
-        }
-        else
-        {
-            camera.Current = false;
-        }
+        controlled = parentNode.Definition.objectId == clientId;
+        LookVector = new Vector3(camera.Rotation.X, Rotation.Y, 0);
     }
 
-    public override void _UnhandledInput(InputEvent @event)
+    public void Look(Vector2 mouseDelta)
     {
-        if (!controlled || Input.MouseMode != Input.MouseModeEnum.Captured) return;
-        
-        if (@event is InputEventMouseMotion mouseMotion)
-        {
-            RotateY(-mouseMotion.Relative.X * 0.005f);
-            camera.RotateX(-mouseMotion.Relative.Y * 0.005f);
-            camera.Rotation = new Vector3(
-                Mathf.Clamp(camera.Rotation.X, -Mathf.Pi / 2, Mathf.Pi / 2),
-                camera.Rotation.Y,
-                camera.Rotation.Z
-            );
-        }
+        // Update lookVector using mouseDelta
+        LookVector = new Vector3(
+            _lookVector.X - mouseDelta.Y * 0.005f, // Pitch
+            _lookVector.Y - mouseDelta.X * 0.005f, // Yaw
+            0
+        );
     }
 
-    public override void _PhysicsProcess(double delta)
+    public void Move(Vector2 inputDir, bool jumpPressed, double delta)
     {
-        // Add the gravity
+        // Add gravity
         if (!IsOnFloor())
         {
             Velocity += GetGravity() * (float)delta;
         }
 
         // Handle jump
-        if (controlled)
+        if (jumpPressed && IsOnFloor())
         {
-            if (Input.IsActionJustPressed("ui_accept") && IsOnFloor())
-            {
-                Velocity = new Vector3(Velocity.X, JumpVelocity, Velocity.Z);
-            }
-
-            var inputDir = Input.GetVector("left", "right", "up", "down");
-            var direction = (Transform.Basis * new Vector3(inputDir.X, 0, inputDir.Y)).Normalized();
-            
-            if (direction != Vector3.Zero)
-            {
-                Velocity = new Vector3(
-                    direction.X * Speed,
-                    Velocity.Y,
-                    direction.Z * Speed
-                );
-            }
-            else
-            {
-                Velocity = new Vector3(
-                    Mathf.MoveToward(Velocity.X, 0, Speed),
-                    Velocity.Y,
-                    Mathf.MoveToward(Velocity.Z, 0, Speed)
-                );
-            }
+            Velocity = new Vector3(Velocity.X, JumpVelocity, Velocity.Z);
         }
 
+        var direction = (Transform.Basis * new Vector3(inputDir.X, 0, inputDir.Y)).Normalized();
+        if (direction != Vector3.Zero)
+        {
+            Velocity = new Vector3(
+                direction.X * Speed,
+                Velocity.Y,
+                direction.Z * Speed
+            );
+        }
+        else
+        {
+            Velocity = new Vector3(
+                Mathf.MoveToward(Velocity.X, 0, Speed),
+                Velocity.Y,
+                Mathf.MoveToward(Velocity.Z, 0, Speed)
+            );
+        }
+    }
+
+    public override void _UnhandledInput(InputEvent @event)
+    {
+        if (!controlled || Input.MouseMode != Input.MouseModeEnum.Captured) return;
+        if (@event is InputEventMouseMotion mouseMotion)    
+        {
+            Look(mouseMotion.Relative);
+        }
+    }
+
+    public override void _PhysicsProcess(double delta)
+    {
+        if (!controlled) return;
+        bool jumpPressed = Input.IsActionJustPressed("jump");
+        var inputDir = Input.GetVector("move_left", "move_right", "move_up", "move_down");
+        Move(inputDir, jumpPressed, delta);
         MoveAndSlide();
     }
 }

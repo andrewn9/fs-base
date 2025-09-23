@@ -74,13 +74,16 @@ public partial class Network : Node
 
             ObjectDefinition def = new ObjectDefinition
             {
-                Type = Globals.Classes.ObjectType.Player,
-                ObjectId = senderId,
+                objectType = Globals.Classes.ObjectType.Player,
+                objectId = senderId,
                 Transform = new Transform3D(Basis.Identity, Vector3.Up * 2)
             };
 
             GD.Print("sending existing objects to new connection");
-            RpcId(senderId, MethodName._AddExistingObjects, gameState.GameObjects);
+            if (senderId != 1)
+            {   
+                RpcId(senderId, MethodName._AddExistingObjects, gameState.GameObjects);
+            }
 
             GD.Print("spawning new character for new connection");
             Rpc(MethodName._SpawnObject, senderId, Variant.From(def.Serialize()));

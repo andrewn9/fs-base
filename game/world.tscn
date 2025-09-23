@@ -32,9 +32,10 @@ shadow_enabled = true
 follow_viewport_enabled = true
 
 [node name="Label" type="Label" parent="CanvasLayer"]
-offset_right = 40.0
-offset_bottom = 23.0
+offset_right = 1144.0
+offset_bottom = 608.0
 text = "id:"
+autowrap_mode = 1
 
 [node name="spawn" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1012082, 0)

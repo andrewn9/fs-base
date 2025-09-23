@@ -11,4 +11,10 @@ namespace Globals.Classes
         Environment,
         Unknown
     }
+
+    public enum NetworkAuthority
+    {
+        Server,
+        Client
+    }
 }

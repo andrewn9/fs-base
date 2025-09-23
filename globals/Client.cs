@@ -42,7 +42,7 @@ public partial class Client : Node
         // var inst = character.Instantiate();
         // world.AddChild(inst);
         // Currently empty - pass
-        if (objDef.Type == Globals.Classes.ObjectType.Player)
+        if (objDef.objectType == Globals.Classes.ObjectType.Player)
         {
             GD.Print($"spawning character {id}");
 
@@ -61,7 +61,6 @@ public partial class Client : Node
             gameState.GameObjects[id] = inst.Definition.Serialize();
             gameState.GameObjectRef[id] = inst;
         }
-        
     }
 
     public override void _Process(double delta)
