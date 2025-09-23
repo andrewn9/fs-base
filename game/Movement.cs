@@ -12,18 +12,20 @@ public partial class Movement : CharacterBody3D
     public override void _Ready()
     {
         camera = GetNode<Camera3D>("Camera3D");
-        
+
         var client = GetNode<Client>("/root/Client");
         var parentNode = GetParent<Character>();
-        var parentId = parentNode.Id;
         var clientId = client.clientInfo.Id;
-        
-        controlled = parentId == clientId;
-        
+
+        controlled = parentNode.Definition.ObjectId == clientId;
+
         if (controlled)
         {
-            camera.ProcessMode = Node.ProcessModeEnum.Disabled;
-            Input.MouseMode = Input.MouseModeEnum.Captured;
+            camera.Current = true;
+        }
+        else
+        {
+            camera.Current = false;
         }
     }
 

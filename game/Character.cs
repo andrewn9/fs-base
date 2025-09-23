@@ -2,10 +2,8 @@ using Godot;
 using Godot.Collections;
 using System;
 
-public partial class Character : Node3D
+public partial class Character : Object
 {
-	public long Id;
-    public CharacterDefinition def = new();
     public CharacterBody3D controller;
 
     // Called when the node enters the scene tree for the first time.
@@ -13,37 +11,41 @@ public partial class Character : Node3D
 	{
         controller = GetNode<CharacterBody3D>("CharacterBody3D");
     }
-    private float _rpcTimer = 0f; // Accumulator for timing
-    private const float RpcInterval = 1/20f; // Interval in seconds
+    private float _rpcTimer = 0f;
+    private const float RpcInterval = 1f;
+    
+    public override void LoadDefinition()
+    {
+        if (Definition != null)
+        {
+            controller.GlobalTransform = Definition.Transform;
+        }
+    }
 
-	// Called every frame. 'delta' is the elapsed time since the previous frame.
-
-	public void LoadDefinition()
-	{
-		if (Id == Multiplayer.GetUniqueId()) {
-            return;
+    public override void UpdateDefinition()
+    {
+        if (Definition != null)
+        {
+            Definition.Transform = controller.GlobalTransform;
         }
         GameState gameState = GetNode<GameState>("/root/GameState");
-        Vector3 pos = (gameState.GameObjects[Id].AsGodotDictionary()["characterDefinition"].AsGodotDictionary()["position"].AsVector3());
-        // CharacterDefinition goal = CharacterDefinition.Deserialize(gameState.GameObjects["id"].AsGodotDictionary()["characterDefinition"].AsGodotDictionary());
-        def.position = pos;
-        controller.GlobalPosition = def.position;
+        gameState.GameObjects[Definition.ObjectId] = Definition.Serialize();
     }
-	public override void _Process(double delta)
-	{
-		if (Id != Multiplayer.GetUniqueId()) {
+    public override void _Process(double delta)
+    {
+        if (Definition.ObjectId != Multiplayer.GetUniqueId())
+        {
             return;
         }
-		Network network = GetNode<Network>("/root/Network");
-        // GD.Print(controller.GlobalPosition);
-        def.position = controller.GlobalPosition;
+        UpdateDefinition();
+
+        Network network = GetNode<Network>("/root/Network");
         _rpcTimer += (float)delta;
 
-        // Only send the RPC every 5 seconds
         if (_rpcTimer >= RpcInterval)
         {
             GD.Print("Sent update");
-            network.Rpc("UpdateDefinition", def.Serialize());
+            network.Rpc("UpdateDefinition", Definition.ObjectId, Definition.Serialize());
             _rpcTimer = 0f;
         }
 

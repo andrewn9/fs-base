@@ -3,6 +3,7 @@ using Godot.Collections;
 
 public partial class GameState : Node
 {
-    public Dictionary Players { get; set; } = new Dictionary();
-    public Dictionary GameObjects { get; set; } = new Dictionary();
+    public Dictionary Players { get; set; } = new();
+    public Dictionary<long, Dictionary> GameObjects { get; set; } = new();
+    public Dictionary<long, Object> GameObjectRef { get; set; } = new();
 }

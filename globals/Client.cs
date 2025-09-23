@@ -31,9 +31,10 @@ public partial class Client : Node
         Loaded = true;
     }
 
-    public async void SpawnCharacter(long id, Dictionary def)
+    public async void SpawnObject(long id, Dictionary def)
     {
-        CharacterDefinition characterDefinition = CharacterDefinition.Deserialize(def);
+        GameState gameState = GetNode<GameState>("/root/GameState");
+        ObjectDefinition objDef = ObjectDefinition.Deserialize(def);
         // while (!loaded)
         //     await GetTree().ProcessFrame();
         //
@@ -41,33 +42,26 @@ public partial class Client : Node
         // var inst = character.Instantiate();
         // world.AddChild(inst);
         // Currently empty - pass
-        GD.Print($"spawning character for {id}");
-
-        var gameState = GetNode<GameState>("/root/GameState");
-        var characterScene = GD.Load<PackedScene>("res://game/character.tscn");
-
-        while (!Loaded)
+        if (objDef.Type == Globals.Classes.ObjectType.Player)
         {
-            await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            GD.Print($"spawning character {id}");
+
+            var characterScene = GD.Load<PackedScene>("res://game/character.tscn");
+            while (!Loaded)
+            {
+                await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            }
+
+            var inst = characterScene.Instantiate<Node3D>() as Character;
+            inst.Definition = objDef;
+            inst.Name = id.ToString();
+            World.AddChild(inst);
+            inst.LoadDefinition();
+
+            gameState.GameObjects[id] = inst.Definition.Serialize();
+            gameState.GameObjectRef[id] = inst;
         }
         
-        var inst = characterScene.Instantiate<Node3D>();
-        inst.Set("Id", id);
-        inst.Name = id.ToString();
-        World.AddChild(inst);
-
-        if (characterDefinition.position == Vector3.Zero)
-        {
-            characterDefinition.position = World.GetNode<Node3D>("spawn").GlobalPosition;
-        }
-
-        inst.GetNode<CharacterBody3D>("CharacterBody3D").GlobalPosition = characterDefinition.position;
-        
-        var gameObjectData = new Dictionary
-        {
-            { "characterDefinition", def }
-        };
-        gameState.GameObjects[id] = gameObjectData;
     }
 
     public override void _Process(double delta)

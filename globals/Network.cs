@@ -9,10 +9,10 @@ public partial class Network : Node
 
     [Signal]
     public delegate void ServerCreatedEventHandler();
-    
+
     [Signal]
     public delegate void JoinSuccessEventHandler();
-    
+
     [Signal]
     public delegate void JoinFailEventHandler();
 
@@ -26,7 +26,7 @@ public partial class Network : Node
         Multiplayer.MultiplayerPeer = peer;
         EmitSignal(SignalName.ServerCreated);
         EmitSignal(SignalName.JoinSuccess);
-        
+
         return Error.Ok;
     }
 
@@ -63,63 +63,70 @@ public partial class Network : Node
     {
         var senderId = Multiplayer.GetRemoteSenderId();
         var gameState = GetNode<GameState>("/root/GameState");
-        
+
         gameState.Players[senderId] = clientInfo;
         GD.Print($"registered player: {senderId}: {clientInfo}");
-        
+
         if (Multiplayer.IsServer())
         {
             Rpc(MethodName._UpdatePlayerList, gameState.Players);
             GD.Print("sent updated player list to others");
 
-            Dictionary spawnDef = new CharacterDefinition(true, Vector3.Zero, Vector2.Zero).Serialize();
-            Rpc(MethodName._SpawnCharacter, senderId, spawnDef);
+            ObjectDefinition def = new ObjectDefinition
+            {
+                Type = Globals.Classes.ObjectType.Player,
+                ObjectId = senderId,
+                Transform = new Transform3D(Basis.Identity, Vector3.Up * 2)
+            };
 
             GD.Print("sending existing objects to new connection");
             RpcId(senderId, MethodName._AddExistingObjects, gameState.GameObjects);
+
+            GD.Print("spawning new character for new connection");
+            Rpc(MethodName._SpawnObject, senderId, Variant.From(def.Serialize()));
         }
     }
 
-    [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Unreliable)]
-    public void UpdateDefinition(Dictionary def)
-    {
-        var senderId = Multiplayer.GetRemoteSenderId();
-        var gameState = GetNode<GameState>("/root/GameState");
-        gameState.GameObjects[senderId].AsGodotDictionary()["characterDefinition"] = def;
-        GetNode<Client>("/root/Client").World.GetNode<Character>(senderId.ToString()).LoadDefinition();
-    }
-
-
     [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = false, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
-    public async void _AddExistingObjects(Godot.Collections.Dictionary required)
+    public void _AddExistingObjects(Dictionary required)
     {
         var gameState = GetNode<GameState>("/root/GameState");
         var client = GetNode<Client>("/root/Client");
 
         foreach (var key in required.Keys)
         {
-            if (gameState.GameObjects.ContainsKey(key))
+            if (gameState.GameObjects.ContainsKey(key.AsInt64()))
                 continue;
 
-            var id = key.AsInt64();
-            GD.Print($"spawning existing character for {id}");
+            var objectId = key.AsInt64();
+            var objectData = required[key].AsGodotDictionary();
 
-            Dictionary def = required[key].AsGodotDictionary()["characterDefinition"].AsGodotDictionary();
-            client.SpawnCharacter(id, def);
+            GD.Print($"spawning existing object for {objectId}");
 
-            var gameObjectData = new Godot.Collections.Dictionary
-            {
-                { "characterDefinition", def }
-            };
-            gameState.GameObjects[id] = gameObjectData;
+            // Spawn the object on the client
+            client.SpawnObject(objectId, objectData);
+
+            gameState.GameObjects[objectId] = objectData;
+        }
+    }
+
+    [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = false, TransferMode = MultiplayerPeer.TransferModeEnum.UnreliableOrdered)]
+    public void UpdateDefinition(long id, Dictionary def)
+    {
+        var gameState = GetNode<GameState>("/root/GameState");
+        if (gameState.GameObjects.ContainsKey(id))
+        {
+            gameState.GameObjects[id] = def;
+            gameState.GameObjectRef[id].Definition = ObjectDefinition.Deserialize(def);
+            gameState.GameObjectRef[id].LoadDefinition();
         }
     }
 
     [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
-    public async void _SpawnCharacter(long id, Dictionary def)
+    public void _SpawnObject(long id, Dictionary def)
     {
         var client = GetNode<Client>("/root/Client");
-        client.SpawnCharacter(id, def);
+        client.SpawnObject(id, def);
     }
 
     [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
