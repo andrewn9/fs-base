@@ -5,7 +5,8 @@ public partial class Movement : CharacterBody3D
     private Camera3D camera;
     private const float Speed = 5.0f;
     private const float JumpVelocity = 4.5f;
-    private bool controlled = false;
+    public bool controlled = false;
+    public bool canJump = false;
     private Vector3 _lookVector = Vector3.Zero;
     public Vector3 LookVector
     {
@@ -28,12 +29,12 @@ public partial class Movement : CharacterBody3D
         var parentNode = GetParent<Character>();
         var clientId = client.clientInfo.Id;
         controlled = parentNode.Definition.objectId == clientId;
+        camera.Current = controlled;
         LookVector = new Vector3(camera.Rotation.X, Rotation.Y, 0);
     }
 
     public void Look(Vector2 mouseDelta)
     {
-        // Update lookVector using mouseDelta
         LookVector = new Vector3(
             _lookVector.X - mouseDelta.Y * 0.005f, // Pitch
             _lookVector.Y - mouseDelta.X * 0.005f, // Yaw
@@ -41,18 +42,18 @@ public partial class Movement : CharacterBody3D
         );
     }
 
-    public void Move(Vector2 inputDir, bool jumpPressed, double delta)
+    public void Jump()
+    {
+        Velocity = new Vector3(Velocity.X, JumpVelocity, Velocity.Z);
+        canJump = false;
+    }
+
+    public void Move(Vector2 inputDir, double delta)
     {
         // Add gravity
         if (!IsOnFloor())
         {
             Velocity += GetGravity() * (float)delta;
-        }
-
-        // Handle jump
-        if (jumpPressed && IsOnFloor())
-        {
-            Velocity = new Vector3(Velocity.X, JumpVelocity, Velocity.Z);
         }
 
         var direction = (Transform.Basis * new Vector3(inputDir.X, 0, inputDir.Y)).Normalized();
@@ -72,23 +73,11 @@ public partial class Movement : CharacterBody3D
                 Mathf.MoveToward(Velocity.Z, 0, Speed)
             );
         }
-    }
-
-    public override void _UnhandledInput(InputEvent @event)
-    {
-        if (!controlled || Input.MouseMode != Input.MouseModeEnum.Captured) return;
-        if (@event is InputEventMouseMotion mouseMotion)    
-        {
-            Look(mouseMotion.Relative);
-        }
+        MoveAndSlide();
     }
 
     public override void _PhysicsProcess(double delta)
     {
-        if (!controlled) return;
-        bool jumpPressed = Input.IsActionJustPressed("jump");
-        var inputDir = Input.GetVector("move_left", "move_right", "move_up", "move_down");
-        Move(inputDir, jumpPressed, delta);
-        MoveAndSlide();
+        canJump = IsOnFloor();
     }
 }
