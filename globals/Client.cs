@@ -5,6 +5,7 @@ public partial class Client : Node
     public ClientInfo clientInfo = new();
     public Node World;
     public bool Loaded = false;
+    private long _lastId = 1;
 
     public override void _Ready()
     {
@@ -14,6 +15,23 @@ public partial class Client : Node
         network.JoinSuccess += _OnJoin;
     }
 
+    public long GetUniqueId()
+    {
+        if (!Multiplayer.IsServer())
+        {
+            return -1;
+        }
+        var gameState = GetNode<GameState>("/root/GameState");
+        _lastId += 1;
+        foreach (long key in gameState.GameObjects.Keys)
+        {
+            if (key >= _lastId)
+            {
+                _lastId = key + 1;
+            }
+        }
+        return _lastId;
+    }
     private async void _OnJoin()
     {
         GD.Print("Connected. Sending required data");
@@ -24,10 +42,10 @@ public partial class Client : Node
 
         var worldScene = GD.Load<PackedScene>("res://game/world.tscn");
         var tree = GetTree();
-        
+
         tree.ChangeSceneToPacked(worldScene);
         await ToSignal(tree, SceneTree.SignalName.SceneChanged);
-        
+
         World = tree.CurrentScene;
         Loaded = true;
     }
@@ -36,18 +54,11 @@ public partial class Client : Node
     {
         GameState gameState = GetNode<GameState>("/root/GameState");
         ObjectDefinition objDef = ObjectDefinition.Deserialize(def);
-        // while (!loaded)
-        //     await GetTree().ProcessFrame();
-        //
-        // var character = GD.Load<PackedScene>("res://game/character.tscv");
-        // var inst = character.Instantiate();
-        // world.AddChild(inst);
-        // Currently empty - pass
         if (objDef.ObjectType == Globals.Classes.ObjectType.Player)
         {
             GD.Print($"spawning character {id}");
 
-            var characterScene = GD.Load<PackedScene>("res://game/character.tscn");
+            var characterScene = GD.Load<PackedScene>("res://game/entities/" + def["scene_name"]);
             while (!Loaded)
             {
                 await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
@@ -59,6 +70,22 @@ public partial class Client : Node
             World.AddChild(inst);
             inst.SnapTo(objDef.Transform);
 
+            gameState.GameObjects[id] = inst.Definition.Serialize();
+            gameState.GameObjectRef[id] = inst;
+        }
+        else if (objDef.ObjectType == Globals.Classes.ObjectType.Item)
+        {
+            GD.Print($"spawning item {id}");
+            var itemScene = GD.Load<PackedScene>("res://game/entities/" + def["scene_name"]);
+            while (!Loaded)
+            {
+                await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            }
+            var inst = itemScene.Instantiate<Node3D>() as Item;
+            inst.Definition = objDef;
+            inst.Name = id.ToString();
+            World.AddChild(inst);
+            inst.LoadDefinition();
             gameState.GameObjects[id] = inst.Definition.Serialize();
             gameState.GameObjectRef[id] = inst;
         }

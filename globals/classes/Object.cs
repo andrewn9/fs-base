@@ -1,28 +1,30 @@
 using Godot;
 
-public partial class Object : Node3D
+namespace Net
 {
-    private ObjectDefinition _definition;
-
-    public ObjectDefinition Definition
+    public partial class Object : Node3D
     {
-        get => _definition;
-        set => _definition = value ?? new ObjectDefinition();
-    }
-
-    public virtual void LoadDefinition()
-    {
-        if (Definition != null)
+        private ObjectDefinition _definition;
+        public ObjectDefinition Definition
         {
-            GlobalTransform = Definition.Transform;
+            get => _definition;
+            set => _definition = value ?? new ObjectDefinition();
         }
-    }
 
-    public virtual void UpdateDefinition()
-    {
-        if (Definition != null)
+        public virtual void LoadDefinition()
         {
-            Definition.Transform = GlobalTransform;
+            if (Definition != null)
+            {
+                GlobalTransform = Definition.Transform;
+            }
+        }
+
+        public virtual void UpdateDefinition()
+        {
+            if (Definition != null)
+            {
+                Definition.Transform = GlobalTransform;
+            }
         }
     }
 }

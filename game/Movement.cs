@@ -14,13 +14,14 @@ public partial class Movement : CharacterBody3D
         set
         {
             _lookVector = value;
-            // Clamp pitch
             _lookVector.X = Mathf.Clamp(_lookVector.X, -Mathf.Pi / 2, Mathf.Pi / 2);
-            // Apply rotations
             Rotation = new Vector3(Rotation.X, _lookVector.Y, Rotation.Z);
             camera.Rotation = new Vector3(_lookVector.X, camera.Rotation.Y, camera.Rotation.Z);
         }
     }
+	[Export] public float Mass = 80.0f;
+
+	[Export] public float PushForceScalar = 5.0f;
 
     // Camera bob fields
     [Export] public float CameraBobAmplitude { get; set; } = 0.038f;
@@ -93,9 +94,42 @@ public partial class Movement : CharacterBody3D
                 Mathf.MoveToward(Velocity.Z, 0, Speed)
             );
         }
-        MoveAndSlide();
     }
+    
+	private void PushAwayRigidBodies()
+    {
+        for (int i = 0; i < GetSlideCollisionCount(); i++)
+        {
+            KinematicCollision3D CollisionData = GetSlideCollision(i);
 
+            GodotObject UnkObj = CollisionData.GetCollider();
+
+            if (UnkObj is RigidBody3D)
+            {
+                RigidBody3D Obj = UnkObj as RigidBody3D;
+
+                // Objects with more mass than us should be harder to push.
+                // But doesn't really make sense to push faster than we are going
+                float MassRatio = Mathf.Min(1.0f, Mass / Obj.Mass);
+
+                // Optional add: Don't push object at all if it's 4x heavier or more
+                if (MassRatio < 0.25f) continue;
+
+                Vector3 PushDir = -CollisionData.GetNormal();
+
+                // How much velocity the object needs to increase to match player velocity in the push direction
+                float VelocityDiffInPushDir = Velocity.Dot(PushDir) - Obj.LinearVelocity.Dot(PushDir);
+
+                // Only count velocity towards push dir, away from character
+                VelocityDiffInPushDir = Mathf.Max(0.0f, VelocityDiffInPushDir);
+
+                PushDir.Y = 0; // Don't push object from above/below
+
+                float PushForce = MassRatio * PushForceScalar;
+                Obj.ApplyImpulse(PushDir * VelocityDiffInPushDir * PushForce, CollisionData.GetPosition() - Obj.GlobalPosition);
+            }
+        }
+    }
     public override void _PhysicsProcess(double delta)
     {
         bool isOnFloor = IsOnFloor();
@@ -141,5 +175,7 @@ public partial class Movement : CharacterBody3D
         {
             _landBobOffset = Mathf.MoveToward(_landBobOffset, 0f, CameraBobLandDecay * (float)delta);
         }
+        PushAwayRigidBodies();
+        MoveAndSlide();
     }
 }

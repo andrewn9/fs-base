@@ -16,6 +16,9 @@ public partial class Network : Node
     [Signal]
     public delegate void JoinFailEventHandler();
 
+    [Signal]
+    public delegate void MapDataReceivedEventHandler();
+
     public Error CreateServer()
     {
         var peer = new ENetMultiplayerPeer();
@@ -82,19 +85,15 @@ public partial class Network : Node
                     await ToSignal(GetTree().CreateTimer(0.5f), "timeout");
                 }
             }
-            
-            GD.Print(client.World.GetChildren());
-
 
             Node spawns = client.World.GetNode<Node>("Spawns");
             Node3D spawnPoint = spawns.GetChild<Node3D>((int)(GD.Randi() % spawns.GetChildCount()));
-            GD.Print($"spawning at {spawnPoint.Name}");
-            GD.Print($"spawning at {spawnPoint.GlobalTransform}");
             ObjectDefinition def = new ObjectDefinition
             {
                 ObjectType = Globals.Classes.ObjectType.Player,
                 ObjectId = senderId,
-                Transform = spawnPoint.GlobalTransform
+                Transform = spawnPoint.GlobalTransform,
+                SceneName = "character.tscn"
             };
 
             GD.Print("sending existing objects to new connection");
@@ -126,7 +125,6 @@ public partial class Network : Node
 
             // Spawn the object on the client
             client.SpawnObject(objectId, objectData);
-
             gameState.GameObjects[objectId] = objectData;
         }
     }

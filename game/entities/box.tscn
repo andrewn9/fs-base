@@ -1,0 +1,25 @@
+[gd_scene load_steps=4 format=3 uid="uid://b21y76qv7mxcw"]
+
+[ext_resource type="Script" uid="uid://ctp434wrw1q2t" path="res://game/Item.cs" id="1_bb4ay"]
+[ext_resource type="PackedScene" uid="uid://dfjc3ipl7j66y" path="res://blend/box.blend" id="2_0ey2e"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_m4twg"]
+size = Vector3(0.6, 0.6, 0.6)
+
+[node name="Box" type="Node3D"]
+script = ExtResource("1_bb4ay")
+
+[node name="RigidBody3D" type="RigidBody3D" parent="." groups=["Grabbable"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -21.735449, -4.1782265, 9.3592)
+axis_lock_angular_x = true
+axis_lock_angular_y = true
+axis_lock_angular_z = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D"]
+shape = SubResource("BoxShape3D_m4twg")
+
+[node name="box" parent="RigidBody3D" instance=ExtResource("2_0ey2e")]
+
+[connection signal="sleeping_state_changed" from="RigidBody3D" to="." method="_on_rigid_body_3d_sleeping_state_changed" flags=18]
+
+[editable path="RigidBody3D/box"]

@@ -1,0 +1,2 @@
+use MapDataReceivedEventHandler in Network.cs and have all other clients wait until then to load object definitions/spawn required objects
+find better names for LoadDefinition and UpdateDefinition

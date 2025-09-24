@@ -1,14 +1,11 @@
-[gd_scene load_steps=12 format=3 uid="uid://pm7bbtq72irj"]
+[gd_scene load_steps=11 format=3 uid="uid://pm7bbtq72irj"]
 
 [ext_resource type="PackedScene" uid="uid://bqnh7espkihvs" path="res://game/map.tscn" id="1_f3sb7"]
 [ext_resource type="Script" uid="uid://4mfbowtxi056" path="res://game/world.gd" id="1_tlwt5"]
-[ext_resource type="PackedScene" uid="uid://dfjc3ipl7j66y" path="res://blend/box.blend" id="2_fhh06"]
+[ext_resource type="PackedScene" uid="uid://b21y76qv7mxcw" path="res://game/entities/box.tscn" id="2_fhh06"]
 [ext_resource type="Material" uid="uid://1dq78khd15jk" path="res://blend/mat/white_brick.tres" id="3_805w3"]
 [ext_resource type="PackedScene" uid="uid://delu2qjrw6teu" path="res://ext/addons/Mirror3D/Mirror3D.tscn" id="3_tvmmn"]
 [ext_resource type="PackedScene" uid="uid://b16vc4vs2cpuf" path="res://blend/construct.blend" id="4_4xpgs"]
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_m4twg"]
-size = Vector3(0.6, 0.6, 0.6)
 
 [sub_resource type="Environment" id="Environment_4xpgs"]
 glow_enabled = true
@@ -29,13 +26,7 @@ size = Vector2(1, 1)
 [node name="World" type="Node"]
 script = ExtResource("1_tlwt5")
 
-[node name="RigidBody3D" type="RigidBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -21.735449, -4.1782265, 9.3592)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D"]
-shape = SubResource("BoxShape3D_m4twg")
-
-[node name="box" parent="RigidBody3D" instance=ExtResource("2_fhh06")]
+[node name="Box" parent="." instance=ExtResource("2_fhh06")]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_4xpgs")
@@ -132,5 +123,3 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.188606, -5.4969683, 13.24
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.34353113, 0.5771189)
 material_override = ExtResource("3_805w3")
 mesh = SubResource("PlaneMesh_fhh06")
-
-[editable path="RigidBody3D/box"]

@@ -1,6 +1,6 @@
 using Godot;
 
-public partial class Character : Object
+public partial class Character : Net.Object
 {
     public CharacterBody3D controller;
     public Skeleton3D skeleton;
