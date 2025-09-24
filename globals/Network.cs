@@ -59,10 +59,11 @@ public partial class Network : Node
 
     // RPC to update a specific player's data
     [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
-    public void _RegisterSelf(Godot.Collections.Dictionary clientInfo)
+    public async void _RegisterSelf(Godot.Collections.Dictionary clientInfo)
     {
         var senderId = Multiplayer.GetRemoteSenderId();
-        var gameState = GetNode<GameState>("/root/GameState");
+        GameState gameState = GetNode<GameState>("/root/GameState");
+        Client client = GetNode<Client>("/root/Client");
 
         gameState.Players[senderId] = clientInfo;
         GD.Print($"registered player: {senderId}: {clientInfo}");
@@ -72,11 +73,28 @@ public partial class Network : Node
             Rpc(MethodName._UpdatePlayerList, gameState.Players);
             GD.Print("sent updated player list to others");
 
+            if (senderId == 1)
+            {
+                // wait until client.World is ready, i.e client.loaded = true
+                while (!client.Loaded)
+                {
+                    GD.Print("waiting for host world to be ready...");
+                    await ToSignal(GetTree().CreateTimer(0.5f), "timeout");
+                }
+            }
+            
+            GD.Print(client.World.GetChildren());
+
+
+            Node spawns = client.World.GetNode<Node>("Spawns");
+            Node3D spawnPoint = spawns.GetChild<Node3D>((int)(GD.Randi() % spawns.GetChildCount()));
+            GD.Print($"spawning at {spawnPoint.Name}");
+            GD.Print($"spawning at {spawnPoint.GlobalTransform}");
             ObjectDefinition def = new ObjectDefinition
             {
                 ObjectType = Globals.Classes.ObjectType.Player,
                 ObjectId = senderId,
-                Transform = new Transform3D(Basis.Identity, Vector3.Up * 2)
+                Transform = spawnPoint.GlobalTransform
             };
 
             GD.Print("sending existing objects to new connection");

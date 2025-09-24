@@ -1,0 +1,10 @@
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://v7mtm1jj6qex"]
+
+[ext_resource type="Texture2D" uid="uid://bqo26k4xlhgi6" path="res://blend/textures/construct_building_BC.png" id="1_38vga"]
+
+[resource]
+resource_name = "building_01"
+cull_mode = 2
+albedo_texture = ExtResource("1_38vga")
+roughness = 0.6
+texture_filter = 0

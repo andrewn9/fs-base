@@ -1,0 +1,9 @@
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://ckt7sm7ltftv8"]
+
+[ext_resource type="Texture2D" uid="uid://iet5qktvf4fr" path="res://blend/textures/construct_cloth_BC.png" id="1_qvpfm"]
+
+[resource]
+resource_name = "cloth"
+cull_mode = 2
+albedo_texture = ExtResource("1_qvpfm")
+roughness = 0.6

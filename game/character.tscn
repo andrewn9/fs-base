@@ -18,11 +18,15 @@ CameraBobLandAmplitude = -0.7
 
 [node name="model" parent="CharacterBody3D" instance=ExtResource("1_it3p1")]
 
+[node name="Skeleton3D" parent="CharacterBody3D/model" index="0"]
+bones/2/rotation = Quaternion(0, 0, 0, 1)
+
 [node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterBody3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.42930603, 0)
 shape = SubResource("CapsuleShape3D_it3p1")
 
 [node name="Camera3D" type="Camera3D" parent="CharacterBody3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.67129576, -0.152796)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.626, -0.12466496)
+fov = 90.0
 
 [editable path="CharacterBody3D/model"]

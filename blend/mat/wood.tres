@@ -1,0 +1,10 @@
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://htr1g7f6furm"]
+
+[ext_resource type="Texture2D" uid="uid://ej6fxo8qgm14" path="res://blend/textures/construct_wood_BC.png" id="1_5mnmx"]
+
+[resource]
+resource_name = "wood"
+cull_mode = 2
+albedo_texture = ExtResource("1_5mnmx")
+roughness = 0.6
+texture_filter = 0

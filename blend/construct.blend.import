@@ -1,0 +1,157 @@
+[remap]
+
+importer="scene"
+importer_version=1
+type="PackedScene"
+uid="uid://b16vc4vs2cpuf"
+path="res://.godot/imported/construct.blend-a4209ec67b74b4907dc56b67b4409094.scn"
+
+[deps]
+
+source_file="res://blend/construct.blend"
+dest_files=["res://.godot/imported/construct.blend-a4209ec67b74b4907dc56b67b4409094.scn"]
+
+[params]
+
+nodes/root_type=""
+nodes/root_name=""
+nodes/root_script=null
+nodes/apply_root_scale=true
+nodes/root_scale=1.0
+nodes/import_as_skeleton_bones=false
+nodes/use_name_suffixes=true
+nodes/use_node_type_suffixes=true
+meshes/ensure_tangents=true
+meshes/generate_lods=true
+meshes/create_shadow_meshes=true
+meshes/light_baking=1
+meshes/lightmap_texel_size=0.2
+meshes/force_disable_compression=false
+skins/use_named_skins=true
+animation/import=true
+animation/fps=30
+animation/trimming=false
+animation/remove_immutable_tracks=true
+animation/import_rest_as_RESET=false
+import_script/path=""
+materials/extract=0
+materials/extract_format=0
+materials/extract_path=""
+_subresources={
+"materials": {
+"brick": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://blend/mat/brick.tres",
+"use_external/path": "uid://ch0ns8oh0a1ni"
+},
+"building_01": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://blend/mat/building_01.tres",
+"use_external/path": "uid://v7mtm1jj6qex"
+},
+"cloth": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://blend/mat/cloth.tres",
+"use_external/path": "uid://ckt7sm7ltftv8"
+},
+"concrete": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://blend/mat/concrete.tres",
+"use_external/path": "uid://c8fslovcibpuc"
+},
+"dark_concrete": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://blend/mat/dark_concrete.tres",
+"use_external/path": "uid://dt16brnjlaj35"
+},
+"doll": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://blend/mat/doll.tres",
+"use_external/path": "uid://d0nfmhl7trmpt"
+},
+"emissive": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://blend/mat/emissive.tres",
+"use_external/path": "uid://dtwghlvyeok6m"
+},
+"grass": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://blend/mat/grass.tres",
+"use_external/path": "uid://iwmdjahgrwo6"
+},
+"poster": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://blend/mat/poster.tres",
+"use_external/path": "uid://dwfjkep23g51s"
+},
+"poster2": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://blend/mat/poster2.tres",
+"use_external/path": "uid://d1ultex8rugka"
+},
+"poster3": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://blend/mat/poster3.tres",
+"use_external/path": "uid://bkitx2kkym4io"
+},
+"roof": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://blend/mat/roof.tres",
+"use_external/path": "uid://dsoq2otgg3dm1"
+},
+"tile_floor": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://blend/mat/tile_floor.tres",
+"use_external/path": "uid://82tromuijc2u"
+},
+"trim": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://blend/mat/trim.tres",
+"use_external/path": "uid://dfawtq8jjenlu"
+},
+"white_brick": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://blend/mat/white_brick.tres",
+"use_external/path": "uid://1dq78khd15jk"
+},
+"white_plank": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://blend/mat/white_plank.tres",
+"use_external/path": "uid://7qdbp1l3cslq"
+},
+"window_tall": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://blend/mat/window_tall.tres",
+"use_external/path": "uid://6bhhvdxsbi5n"
+},
+"wood": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://blend/mat/wood.tres",
+"use_external/path": "uid://htr1g7f6furm"
+}
+},
+"nodes": {
+"PATH:gm_construct_grass-sand_13-material_019": {
+"generate/physics": true
+}
+}
+}
+blender/nodes/visible=0
+blender/nodes/active_collection_only=false
+blender/nodes/punctual_lights=false
+blender/nodes/cameras=false
+blender/nodes/custom_properties=false
+blender/nodes/modifiers=1
+blender/meshes/colors=false
+blender/meshes/uvs=true
+blender/meshes/normals=true
+blender/meshes/export_geometry_nodes_instances=false
+blender/meshes/tangents=true
+blender/meshes/skins=2
+blender/meshes/export_bones_deforming_mesh_only=false
+blender/materials/unpack_enabled=false
+blender/materials/export_materials=1
+blender/animation/limit_playback=true
+blender/animation/always_sample=true
+blender/animation/group_tracks=true
+gltf/naming_version=2

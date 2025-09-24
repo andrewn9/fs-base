@@ -1,0 +1,10 @@
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://dsoq2otgg3dm1"]
+
+[ext_resource type="Texture2D" uid="uid://bqybhlnrrb1ui" path="res://blend/textures/construct_roof_BC.png" id="1_t7yim"]
+
+[resource]
+resource_name = "roof"
+cull_mode = 2
+albedo_texture = ExtResource("1_t7yim")
+roughness = 0.6
+texture_filter = 0

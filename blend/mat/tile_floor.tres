@@ -1,0 +1,10 @@
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://82tromuijc2u"]
+
+[ext_resource type="Texture2D" uid="uid://g510npyyrvko" path="res://blend/textures/construct_tile_floor_BC.png" id="1_2yb6f"]
+
+[resource]
+resource_name = "tile_floor"
+cull_mode = 2
+albedo_texture = ExtResource("1_2yb6f")
+roughness = 0.6
+texture_filter = 0

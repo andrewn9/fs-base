@@ -57,7 +57,7 @@ public partial class Client : Node
             inst.Definition = objDef;
             inst.Name = id.ToString();
             World.AddChild(inst);
-            inst.LoadDefinition();
+            inst.SnapTo(objDef.Transform);
 
             gameState.GameObjects[id] = inst.Definition.Serialize();
             gameState.GameObjectRef[id] = inst;

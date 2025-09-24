@@ -1,0 +1,10 @@
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://dwfjkep23g51s"]
+
+[ext_resource type="Texture2D" uid="uid://b7w2dkqy4l2pm" path="res://blend/textures/construct_poster_BC.png" id="1_bhbcl"]
+
+[resource]
+resource_name = "poster"
+cull_mode = 2
+albedo_texture = ExtResource("1_bhbcl")
+roughness = 0.6
+texture_filter = 0

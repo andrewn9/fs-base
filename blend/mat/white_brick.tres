@@ -1,0 +1,10 @@
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://1dq78khd15jk"]
+
+[ext_resource type="Texture2D" uid="uid://cntl4mxf7asgn" path="res://blend/textures/construct_white_brick_BC.png" id="1_gakuq"]
+
+[resource]
+resource_name = "white_brick"
+cull_mode = 2
+albedo_texture = ExtResource("1_gakuq")
+roughness = 0.6
+texture_filter = 0

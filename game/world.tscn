@@ -1,54 +1,136 @@
-[gd_scene load_steps=9 format=3 uid="uid://pm7bbtq72irj"]
+[gd_scene load_steps=12 format=3 uid="uid://pm7bbtq72irj"]
 
 [ext_resource type="PackedScene" uid="uid://bqnh7espkihvs" path="res://game/map.tscn" id="1_f3sb7"]
 [ext_resource type="Script" uid="uid://4mfbowtxi056" path="res://game/world.gd" id="1_tlwt5"]
+[ext_resource type="PackedScene" uid="uid://dfjc3ipl7j66y" path="res://blend/box.blend" id="2_fhh06"]
+[ext_resource type="Material" uid="uid://1dq78khd15jk" path="res://blend/mat/white_brick.tres" id="3_805w3"]
 [ext_resource type="PackedScene" uid="uid://delu2qjrw6teu" path="res://ext/addons/Mirror3D/Mirror3D.tscn" id="3_tvmmn"]
+[ext_resource type="PackedScene" uid="uid://b16vc4vs2cpuf" path="res://blend/construct.blend" id="4_4xpgs"]
 
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_c6gwx"]
-sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
-ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+[sub_resource type="BoxShape3D" id="BoxShape3D_m4twg"]
+size = Vector3(0.6, 0.6, 0.6)
 
-[sub_resource type="Sky" id="Sky_2dftf"]
-sky_material = SubResource("ProceduralSkyMaterial_c6gwx")
-
-[sub_resource type="Environment" id="Environment_bcbcq"]
-background_mode = 2
-sky = SubResource("Sky_2dftf")
-tonemap_mode = 2
+[sub_resource type="Environment" id="Environment_4xpgs"]
 glow_enabled = true
+glow_intensity = 2.6
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.0063
+volumetric_fog_emission = Color(1, 1, 1, 1)
+volumetric_fog_length = 234.66
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_4kaam"]
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_4xpgs"]
 noise = SubResource("FastNoiseLite_4kaam")
 
+[sub_resource type="PlaneMesh" id="PlaneMesh_fhh06"]
+size = Vector2(1, 1)
+
 [node name="World" type="Node"]
 script = ExtResource("1_tlwt5")
 
+[node name="RigidBody3D" type="RigidBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -21.735449, -4.1782265, 9.3592)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D"]
+shape = SubResource("BoxShape3D_m4twg")
+
+[node name="box" parent="RigidBody3D" instance=ExtResource("2_fhh06")]
+
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_bcbcq")
+environment = SubResource("Environment_4xpgs")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+transform = Transform3D(-0.8660254, -0.19857398, 0.45887738, 0, 0.91775465, 0.3971479, -0.50000006, 0.34394017, -0.79479885, 0, 3.2494931, 0)
+light_volumetric_fog_energy = 5.201
 shadow_enabled = true
+shadow_bias = 0.025
+shadow_normal_bias = 2.584
+shadow_blur = 0.474
+sky_mode = 1
 
 [node name="map" parent="." instance=ExtResource("1_f3sb7")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.3256025, 0)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 follow_viewport_enabled = true
 
 [node name="Label" type="Label" parent="CanvasLayer"]
-offset_right = 1144.0
-offset_bottom = 608.0
-text = "id:"
+offset_left = 4.0
+offset_top = 3.0
+offset_right = 319.0
+offset_bottom = 391.0
 autowrap_mode = 1
 
-[node name="spawn" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1012082, 0)
-
 [node name="Mirror3D1" parent="." instance=ExtResource("3_tvmmn")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.0272931, 1.9669573, -7.5233707)
-size = Vector2(10.42, 3.475)
-pixels_per_unit = 75
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -23.407686, -4.169388, 4.6425714)
+size = Vector2(16.625, 3.7)
+pixels_per_unit = 51
+use_linear_filter = false
+color = Color(1, 1, 1, 1)
 distortion_texture = SubResource("NoiseTexture2D_4xpgs")
-max_fps = 60.0
+cull_near = 0.105
+cull_far = 25.99
+freeze_distance = 23.395
+max_fps = 180.0
+
+[node name="construct" parent="." instance=ExtResource("4_4xpgs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.9696722, -7.7411327, 5.580286)
+
+[node name="Lights" type="Node" parent="."]
+
+[node name="OmniLight3D" type="OmniLight3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.737892, -2.517667, 19.112797)
+light_color = Color(1, 0.92947316, 0.8400777, 1)
+light_energy = 5.517
+shadow_enabled = true
+shadow_blur = 5.641
+omni_range = 37.593
+
+[node name="OmniLight3D2" type="OmniLight3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30.89976, -2.4421492, 24.9304)
+light_color = Color(1, 0.92947316, 0.8400777, 1)
+light_energy = 5.517
+light_bake_mode = 1
+shadow_enabled = true
+shadow_blur = 5.641
+omni_range = 8.7753105
+
+[node name="OmniLight3D3" type="OmniLight3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 0.9999968, 0.002548178, 0, -0.002548178, 0.9999968, -15.735065, -2.4152308, 5.190976)
+light_color = Color(1, 0.92947316, 0.8400777, 1)
+light_energy = 5.517
+shadow_enabled = true
+shadow_blur = 5.641
+omni_range = 9.001
+omni_attenuation = 0.721
+
+[node name="OmniLight3D5" type="OmniLight3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -31.017084, -2.4533498, 5.0763006)
+light_color = Color(1, 0.92947316, 0.8400777, 1)
+light_energy = 5.517
+shadow_enabled = true
+shadow_blur = 5.641
+omni_range = 355.191
+omni_attenuation = 0.721
+
+[node name="OmniLight3D6" type="OmniLight3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -24.51161, -2.4649024, 6.159654)
+light_color = Color(1, 0.92947316, 0.8400777, 1)
+light_energy = 5.517
+shadow_enabled = true
+shadow_blur = 5.641
+omni_range = 1486.361
+omni_attenuation = 0.477
+
+[node name="Spawns" type="Node" parent="."]
+
+[node name="Spawn" type="Node3D" parent="Spawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.188606, -5.4969683, 13.244667)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Spawns/Spawn"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.34353113, 0.5771189)
+material_override = ExtResource("3_805w3")
+mesh = SubResource("PlaneMesh_fhh06")
+
+[editable path="RigidBody3D/box"]

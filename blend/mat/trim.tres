@@ -1,0 +1,10 @@
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://dfawtq8jjenlu"]
+
+[ext_resource type="Texture2D" uid="uid://cgnidm8u0nlw" path="res://blend/textures/construct_trim_BC.png" id="1_5qwha"]
+
+[resource]
+resource_name = "trim"
+cull_mode = 2
+albedo_texture = ExtResource("1_5qwha")
+roughness = 0.6
+texture_filter = 0
