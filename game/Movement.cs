@@ -41,10 +41,7 @@ public partial class Movement : CharacterBody3D
     public override void _Ready()
     {
         camera = GetNode<Camera3D>("Camera3D");
-        var client = GetNode<Client>("/root/Client");
-        var parentNode = GetParent<Character>();
-        var clientId = client.clientInfo.Id;
-        controlled = parentNode.Definition.ObjectId == clientId;
+        controlled = IsMultiplayerAuthority();
         camera.Current = controlled;
         LookVector = new Vector3(camera.Rotation.X, Rotation.Y, 0);
 

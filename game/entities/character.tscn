@@ -1,28 +1,25 @@
 [gd_scene load_steps=6 format=3 uid="uid://c5otnp5hf2eri"]
 
-[ext_resource type="PackedScene" uid="uid://rgtfqphm7hvb" path="res://blend/model.tscn" id="1_it3p1"]
-[ext_resource type="Script" uid="uid://bxo6um3ah2lg8" path="res://game/Character.cs" id="1_q6umf"]
-[ext_resource type="Script" uid="uid://djd5fd0fuo7ti" path="res://game/Movement.cs" id="2_2fk5c"]
-[ext_resource type="Script" uid="uid://b75jdbok87ad8" path="res://game/Grab.cs" id="4_2fk5c"]
+[ext_resource type="Script" uid="uid://bxo6um3ah2lg8" path="res://game/Character.cs" id="1_dki1m"]
+[ext_resource type="Script" uid="uid://djd5fd0fuo7ti" path="res://game/Movement.cs" id="2_q0wq5"]
+[ext_resource type="PackedScene" uid="uid://rgtfqphm7hvb" path="res://blend/model.tscn" id="3_sol7g"]
+[ext_resource type="Script" uid="uid://b75jdbok87ad8" path="res://game/Grab.cs" id="4_ek110"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_it3p1"]
 radius = 0.19824219
 height = 0.91970825
 
 [node name="Character" type="Node3D"]
-script = ExtResource("1_q6umf")
+script = ExtResource("1_dki1m")
 
 [node name="CharacterBody3D" type="CharacterBody3D" parent="."]
-script = ExtResource("2_2fk5c")
+script = ExtResource("2_q0wq5")
 Mass = 100.0
 PushForceScalar = 0.25
 CameraBobSideAmplitude = 0.035
 CameraBobLandAmplitude = -0.7
 
-[node name="model" parent="CharacterBody3D" instance=ExtResource("1_it3p1")]
-
-[node name="Skeleton3D" parent="CharacterBody3D/model" index="0"]
-bones/2/rotation = Quaternion(0, 0, 0, 1)
+[node name="model" parent="CharacterBody3D" instance=ExtResource("3_sol7g")]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterBody3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.42930603, 0)
@@ -33,6 +30,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.626, -0.12466496)
 fov = 90.0
 
 [node name="Node" type="Node" parent="CharacterBody3D"]
-script = ExtResource("4_2fk5c")
+script = ExtResource("4_ek110")
 
 [editable path="CharacterBody3D/model"]

@@ -23,6 +23,8 @@ Network="*res://globals/Network.cs"
 
 [display]
 
+window/size/viewport_width=576
+window/size/viewport_height=324
 window/stretch/aspect="ignore"
 window/vsync/vsync_mode=3
 

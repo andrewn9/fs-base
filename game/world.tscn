@@ -1,11 +1,22 @@
-[gd_scene load_steps=11 format=3 uid="uid://pm7bbtq72irj"]
+[gd_scene load_steps=14 format=3 uid="uid://pm7bbtq72irj"]
 
 [ext_resource type="PackedScene" uid="uid://bqnh7espkihvs" path="res://game/map.tscn" id="1_f3sb7"]
-[ext_resource type="Script" uid="uid://4mfbowtxi056" path="res://game/world.gd" id="1_tlwt5"]
-[ext_resource type="PackedScene" uid="uid://b21y76qv7mxcw" path="res://game/entities/box.tscn" id="2_fhh06"]
+[ext_resource type="Script" uid="uid://4mfbowtxi056" path="res://game/World.cs" id="1_fhh06"]
+[ext_resource type="PackedScene" uid="uid://dfjc3ipl7j66y" path="res://blend/box.blend" id="2_0q2ew"]
 [ext_resource type="Material" uid="uid://1dq78khd15jk" path="res://blend/mat/white_brick.tres" id="3_805w3"]
 [ext_resource type="PackedScene" uid="uid://delu2qjrw6teu" path="res://ext/addons/Mirror3D/Mirror3D.tscn" id="3_tvmmn"]
 [ext_resource type="PackedScene" uid="uid://b16vc4vs2cpuf" path="res://blend/construct.blend" id="4_4xpgs"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ibklf"]
+size = Vector3(0.6, 0.6, 0.6)
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_6ib04"]
+properties/0/path = NodePath(".:linear_velocity")
+properties/0/spawn = true
+properties/0/replication_mode = 2
+properties/1/path = NodePath(".:position")
+properties/1/spawn = true
+properties/1/replication_mode = 2
 
 [sub_resource type="Environment" id="Environment_4xpgs"]
 glow_enabled = true
@@ -23,20 +34,32 @@ noise = SubResource("FastNoiseLite_4kaam")
 [sub_resource type="PlaneMesh" id="PlaneMesh_fhh06"]
 size = Vector2(1, 1)
 
-[node name="World" type="Node"]
-script = ExtResource("1_tlwt5")
+[sub_resource type="BoxShape3D" id="BoxShape3D_fhh06"]
+size = Vector3(25.224, 0.19274902, 31.777988)
 
-[node name="Box" parent="." instance=ExtResource("2_fhh06")]
+[node name="World" type="Node"]
+script = ExtResource("1_fhh06")
+
+[node name="Box" type="RigidBody3D" parent="." groups=["Grabbable"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -21.735449, -4.1782265, 9.3592)
+axis_lock_angular_x = true
+axis_lock_angular_y = true
+axis_lock_angular_z = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Box"]
+shape = SubResource("BoxShape3D_ibklf")
+
+[node name="box" parent="Box" instance=ExtResource("2_0q2ew")]
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="Box"]
+replication_config = SubResource("SceneReplicationConfig_6ib04")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_4xpgs")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.8660254, -0.19857398, 0.45887738, 0, 0.91775465, 0.3971479, -0.50000006, 0.34394017, -0.79479885, 0, 3.2494931, 0)
-light_volumetric_fog_energy = 5.201
 shadow_enabled = true
-shadow_bias = 0.025
-shadow_normal_bias = 2.584
 shadow_blur = 0.474
 sky_mode = 1
 
@@ -123,3 +146,13 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.188606, -5.4969683, 13.24
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.34353113, 0.5771189)
 material_override = ExtResource("3_805w3")
 mesh = SubResource("PlaneMesh_fhh06")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.674927, -2.7227378, 7.622366)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+transform = Transform3D(1.0000004, 1.3038516e-08, 0, 2.4214387e-08, 1.0000033, 2.3283064e-10, 1.4901161e-08, 5.1688403e-08, 1, -2.6120605, 0.29266453, 2.8621044)
+shape = SubResource("BoxShape3D_fhh06")
+debug_color = Color(0.68889445, 0.29013556, 1, 1)
+
+[editable path="Box/box"]

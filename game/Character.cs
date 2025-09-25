@@ -1,6 +1,6 @@
 using Godot;
 
-public partial class Character : Net.Object
+public partial class Character : Node3D
 {
     public CharacterBody3D controller;
     public Skeleton3D skeleton;
@@ -29,19 +29,17 @@ public partial class Character : Net.Object
     private const float InterpSpeed = 10f; // Higher = faster interpolation
 
     private Client client;
+
     public override void _Ready()
     {
         controller = GetNode<CharacterBody3D>("CharacterBody3D");
         animationPlayer = GetNode<AnimationPlayer>("CharacterBody3D/model/AnimationPlayer");
         movement = controller as Movement;
         client = GetNode<Client>("/root/Client");
-        if (Definition != null && Definition.ObjectId == client.clientInfo.Id)
-        {
-            Input.MouseMode = Input.MouseModeEnum.Captured;
-        }
-
         skeleton = GetNode<Skeleton3D>("CharacterBody3D/model/Skeleton3D");
         headBoneIndex = skeleton.FindBone("Head");
+
+        GD.Print("I'm here");
     }
     // Called by local client to send input to server
     public void SendInput(Vector2 moveDir, Vector3 lookVec)
@@ -53,7 +51,7 @@ public partial class Character : Net.Object
         float minInterval = 1f / MaxInputSendsPerSecond;
 
         // Always process local input immediately
-        if (Definition != null && Definition.ObjectId == Multiplayer.GetUniqueId())
+        if (Multiplayer.IsServer() || IsMultiplayerAuthority())
         {
             ReceiveInput(moveDir, lookVec);
         }
@@ -66,7 +64,7 @@ public partial class Character : Net.Object
     }
 
     // Called by server to receive input
-    [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = false, TransferMode = MultiplayerPeer.TransferModeEnum.UnreliableOrdered)]
+    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = false, TransferMode = MultiplayerPeer.TransferModeEnum.UnreliableOrdered)]
     public void ReceiveInput(Vector2 moveDir, Vector3 lookVec)
     {
         // GD.Print($"{Multiplayer.GetRemoteSenderId()}Received input: move {moveDir}, look {lookVec}");
@@ -74,39 +72,28 @@ public partial class Character : Net.Object
         _latestLookVec = lookVec;
     }
 
-    [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Unreliable)]
+    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Unreliable)]
     public void SendJump()
     {
         movement.Jump();
     }
 
+    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = false, TransferMode = MultiplayerPeer.TransferModeEnum.Unreliable)]
     public void SnapTo(Transform3D transform)
     {
         controller.GlobalTransform = transform;
         _targetTransform = transform;
     }
 
-    public override void LoadDefinition()
+    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = false, TransferMode = MultiplayerPeer.TransferModeEnum.Unreliable)]
+    public void LerpTo(Transform3D transform)
     {
-        if (Definition != null)
-        {
-            _targetTransform = Definition.Transform;
-        }
-    }
-
-    public override void UpdateDefinition()
-    {
-        if (Definition != null)
-        {
-            Definition.Transform = controller.GlobalTransform;
-        }
-        GameState gameState = GetNode<GameState>("/root/GameState");
-        gameState.GameObjects[Definition.ObjectId] = Definition.Serialize();
+        _targetTransform = transform;
     }
 
     public override void _UnhandledInput(InputEvent @event)
     {
-        if (!movement.controlled || Input.MouseMode != Input.MouseModeEnum.Captured) return;
+        if (!IsMultiplayerAuthority() || Input.MouseMode != Input.MouseModeEnum.Captured) return;
         if (@event is InputEventMouseMotion mouseMotion)
         {
             movement.Look(mouseMotion.Relative);
@@ -133,8 +120,7 @@ public partial class Character : Net.Object
             }
         }
 
-
-        if (Definition.ObjectId != Multiplayer.GetUniqueId())
+        if (!IsMultiplayerAuthority())
         {
             return;
         }
@@ -154,15 +140,12 @@ public partial class Character : Net.Object
             }
         }
 
-        UpdateDefinition();
-
         Network network = GetNode<Network>("/root/Network");
         _rpcTimer += (float)delta;
 
         if (_rpcTimer >= RpcInterval)
         {
-            // GD.Print("Sent update");
-            network.Rpc(nameof(UpdateDefinition), Definition.ObjectId, Definition.Serialize());
+            Rpc(nameof(LerpTo), controller.GlobalTransform);
             _rpcTimer = 0f;
         }
     }
@@ -187,7 +170,7 @@ public partial class Character : Net.Object
         skeleton.SetBonePose(headBoneIndex, new Transform3D(headRotation, skeleton.GetBonePose(headBoneIndex).Origin));
 
         // Smoothly interpolate to authoritative transform
-        if (!movement.controlled)
+        if (!IsMultiplayerAuthority())
         {
             // Interpolate position
             var currentPos = controller.GlobalTransform.Origin;

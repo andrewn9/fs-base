@@ -6,7 +6,8 @@ public partial class Grab : Node
 {
 	private Camera3D camera;
 	private float holdDistance = 1.0f;
-	private Node3D heldObject = null;
+	private float grabStrength = 45.0f;
+	private RigidBody3D heldObject = null;
 	private Vector3 origin;
 	private Vector3 direction;
 
@@ -44,14 +45,16 @@ public partial class Grab : Node
 						// GD.Print("Hit a RigidBody3D");
 						RigidBody3D body = (RigidBody3D)collider;
 						// GD.Print("RigidBody hit: ", body.Name);
+						body.GravityScale = 0;
 						heldObject = body;
 					}
 				}
 			}
 		}
 
-		if (!Input.IsActionPressed("Grab") && heldObject != null)
+		if ((!Input.IsActionPressed("Grab")) && heldObject != null)
 		{
+			heldObject.GravityScale = 1;
 			heldObject = null;
 		}
 	}
@@ -60,7 +63,8 @@ public partial class Grab : Node
 	{
 		if (heldObject != null)
 		{
-			heldObject.GlobalPosition = camera.GlobalPosition + direction * holdDistance;
+			Vector3 toPosition = camera.GlobalPosition + direction * holdDistance;
+			heldObject.LinearVelocity = grabStrength * (toPosition - heldObject.GlobalPosition);
 		}
     }
 
