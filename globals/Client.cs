@@ -22,7 +22,7 @@ public partial class Client : Node
         var network = GetNode<Network>("/root/Network");
         network.Rpc(Network.MethodName._RegisterSelf, clientInfo.Serialize());
 
-        var serverScene = GD.Load<PackedScene>("res://server.tscn");
+        var serverScene = GD.Load<PackedScene>("res://game/server.tscn");
         var tree = GetTree();
 
         tree.ChangeSceneToPacked(serverScene);

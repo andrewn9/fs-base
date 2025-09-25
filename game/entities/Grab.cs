@@ -16,11 +16,8 @@ public partial class Grab : Node
 		camera = GetNode<Camera3D>("../Camera3D");
 	}
 
-	public override void _Process(double delta)
+	public void queryGrab()
 	{
-		origin = camera.GlobalTransform.Origin;
-		direction = -camera.GlobalTransform.Basis.Z;
-
 		if (Input.IsActionJustPressed("Grab"))
 		{
 			PhysicsDirectSpaceState3D spaceState = GetViewport().GetWorld3D().DirectSpaceState;
@@ -44,16 +41,52 @@ public partial class Grab : Node
 					{
 						// GD.Print("Hit a RigidBody3D");
 						RigidBody3D body = (RigidBody3D)collider;
+						if (body.IsInGroup("grabbed"))
+						{
+							return;
+						}
 						// GD.Print("RigidBody hit: ", body.Name);
 						body.GravityScale = 0;
+						Rpc(nameof(_requestGrab), body.GetPath());
 						heldObject = body;
 					}
 				}
 			}
 		}
+	}
+
+	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	private void _requestGrab(NodePath bodyPath)
+	{
+		Node3D node = GetNode<Node3D>(bodyPath);
+		if (node is RigidBody3D body)
+		{
+			body.SetMultiplayerAuthority(Multiplayer.GetRemoteSenderId());
+			body.AddToGroup("grabbed");
+		}
+	}
+	
+	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	private void _releaseGrab(NodePath bodyPath)
+	{
+		Node3D node = GetNode<Node3D>(bodyPath);
+		if (node is RigidBody3D body)
+		{
+			body.SetMultiplayerAuthority(1);
+			body.RemoveFromGroup("grabbed");
+		}
+	}
+
+	public override void _Process(double delta)
+	{
+		origin = camera.GlobalTransform.Origin;
+		direction = -camera.GlobalTransform.Basis.Z;
+
+		queryGrab();
 
 		if ((!Input.IsActionPressed("Grab")) && heldObject != null)
 		{
+			Rpc(nameof(_releaseGrab), heldObject.GetPath());
 			heldObject.GravityScale = 1;
 			heldObject = null;
 		}

@@ -66,11 +66,10 @@ public partial class Server : Node3D
 		character.SetMultiplayerAuthority(peer);
 		character.GetNode<Node3D>("CharacterBody3D").SetMultiplayerAuthority(peer);
 
-		
 		Node spawns = world.GetNode<Node>("Spawns");
 		Node3D spawnPoint = spawns.GetChild<Node3D>((int)(GD.Randi() % spawns.GetChildCount()));
-		character.GetNode<Node3D>("CharacterBody3D").GlobalPosition = spawnPoint.GlobalPosition;
-		
+		character.spawnPosition = spawnPoint.GlobalPosition;
+
 		GD.Print("Spawning character for peer ", peer);
 		return character;
 	}

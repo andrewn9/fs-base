@@ -14,7 +14,7 @@ public partial class Character : Node3D
         public Vector2 MoveDir;
         public Vector3 LookVec;
     }
-
+    public Vector3 spawnPosition;
     private float _rpcTimer = 0f;
     private const float RpcInterval = 1 / 10f;
 
@@ -32,6 +32,7 @@ public partial class Character : Node3D
 
     public override void _Ready()
     {
+        GlobalPosition = spawnPosition;
         controller = GetNode<CharacterBody3D>("CharacterBody3D");
         animationPlayer = GetNode<AnimationPlayer>("CharacterBody3D/model/AnimationPlayer");
         movement = controller as Movement;
@@ -50,7 +51,6 @@ public partial class Character : Node3D
         float currentTime = Time.GetTicksMsec() / 1000f;
         float minInterval = 1f / MaxInputSendsPerSecond;
 
-        // Always process local input immediately
         if (Multiplayer.IsServer() || IsMultiplayerAuthority())
         {
             ReceiveInput(moveDir, lookVec);
@@ -59,15 +59,12 @@ public partial class Character : Node3D
         {
             Rpc(nameof(ReceiveInput), moveDir, lookVec);
             _lastInputSendTime = currentTime;
-            // GD.Print($"Sent input: move {moveDir}, look {lookVec}");
         }
     }
 
-    // Called by server to receive input
     [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = false, TransferMode = MultiplayerPeer.TransferModeEnum.UnreliableOrdered)]
     public void ReceiveInput(Vector2 moveDir, Vector3 lookVec)
     {
-        // GD.Print($"{Multiplayer.GetRemoteSenderId()}Received input: move {moveDir}, look {lookVec}");
         _latestMoveDir = moveDir;
         _latestLookVec = lookVec;
     }
@@ -105,7 +102,7 @@ public partial class Character : Node3D
         if (client == null || !client.Loaded)
             return;
 
-        if (movement.Velocity.Length() > 0.1f)
+        if (movement.Velocity.Length() > 0.3f)
         {
             if (!animationPlayer.IsPlaying() || animationPlayer.CurrentAnimation != "Run")
             {

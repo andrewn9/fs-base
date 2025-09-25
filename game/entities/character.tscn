@@ -1,9 +1,10 @@
-[gd_scene load_steps=6 format=3 uid="uid://c5otnp5hf2eri"]
+[gd_scene load_steps=7 format=3 uid="uid://c5otnp5hf2eri"]
 
-[ext_resource type="Script" uid="uid://bxo6um3ah2lg8" path="res://game/Character.cs" id="1_dki1m"]
-[ext_resource type="Script" uid="uid://djd5fd0fuo7ti" path="res://game/Movement.cs" id="2_q0wq5"]
+[ext_resource type="Script" uid="uid://bxo6um3ah2lg8" path="res://game/entities/Character.cs" id="1_dki1m"]
+[ext_resource type="Script" uid="uid://djd5fd0fuo7ti" path="res://game/entities/Movement.cs" id="2_q0wq5"]
 [ext_resource type="PackedScene" uid="uid://rgtfqphm7hvb" path="res://blend/model.tscn" id="3_sol7g"]
-[ext_resource type="Script" uid="uid://b75jdbok87ad8" path="res://game/Grab.cs" id="4_ek110"]
+[ext_resource type="Script" uid="uid://b75jdbok87ad8" path="res://game/entities/Grab.cs" id="4_ek110"]
+[ext_resource type="Script" uid="uid://dn38si0r1i8g0" path="res://game/entities/HeadCull.cs" id="4_q0wq5"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_it3p1"]
 radius = 0.19824219
@@ -28,6 +29,7 @@ shape = SubResource("CapsuleShape3D_it3p1")
 [node name="Camera3D" type="Camera3D" parent="CharacterBody3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.626, -0.12466496)
 fov = 90.0
+script = ExtResource("4_q0wq5")
 
 [node name="Node" type="Node" parent="CharacterBody3D"]
 script = ExtResource("4_ek110")

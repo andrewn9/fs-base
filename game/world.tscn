@@ -40,7 +40,7 @@ size = Vector3(25.224, 0.19274902, 31.777988)
 [node name="World" type="Node"]
 script = ExtResource("1_fhh06")
 
-[node name="Box" type="RigidBody3D" parent="." groups=["Grabbable"]]
+[node name="Box" type="RigidBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -21.735449, -4.1782265, 9.3592)
 axis_lock_angular_x = true
 axis_lock_angular_y = true

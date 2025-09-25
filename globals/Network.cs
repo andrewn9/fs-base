@@ -49,14 +49,9 @@ public partial class Network : Node
 
     private void _OnPlayerConnected(long id)
     {
-        var gameState = GetNode<GameState>("/root/GameState");
-        if (!gameState.Players.ContainsKey(id))
-        {
-            // GD.Print($"new connection: {id} .. pending data");
-        }
+        GD.Print($"new connection: {id}");
     }
 
-    // RPC to update a specific player's data
     [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
     public async void _RegisterSelf(Dictionary clientInfo)
     {
@@ -70,7 +65,6 @@ public partial class Network : Node
         if (Multiplayer.IsServer())
         {
             Rpc(MethodName._UpdatePlayerList, gameState.Players);
-            // GD.Print("sent updated player list to others");
 
             while (!client.Loaded || !client.server.loaded)
             {
@@ -86,10 +80,8 @@ public partial class Network : Node
     {
         var gameState = GetNode<GameState>("/root/GameState");
         gameState.Players = allPlayers;
-        // GD.Print($"received player list: {gameState.Players}");
     }
 
-    // Everyone gets notified whenever someone disconnects from the server
     private void _OnPlayerDisconnected(long id)
     {
         GD.Print($"{id} disconnected from the game");
@@ -102,14 +94,9 @@ public partial class Network : Node
     public void _RemovePlayer(long playerId)
     {
         var gameState = GetNode<GameState>("/root/GameState");
-        // if (gameState.GameObjects.ContainsKey(playerId))
-        // {
-        //     gameState.GameObjects.Remove(playerId);
-        // }
         gameState.Players.Remove(playerId);
     }
 
-    // Peer trying to connect to server is notified on failure
     private void _OnConnectionFailed()
     {
         EmitSignal(SignalName.JoinFail);
