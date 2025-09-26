@@ -1,14 +1,19 @@
-[gd_scene load_steps=6 format=3 uid="uid://rgtfqphm7hvb"]
+[gd_scene load_steps=7 format=3 uid="uid://rgtfqphm7hvb"]
 
 [ext_resource type="PackedScene" uid="uid://ctl2gicb6aq3w" path="res://blend/character.blend" id="1_047ie"]
 [ext_resource type="Texture2D" uid="uid://bx2wha4du01ma" path="res://blend/tex/HatTexture_Baked.png" id="2_xi7w4"]
 [ext_resource type="Texture2D" uid="uid://rc1fsipwa8a4" path="res://blend/tex/FriendTexture_Baked.png" id="3_ctnk4"]
+[ext_resource type="Shader" uid="uid://cqxouy2qypo0e" path="res://head_cull.gdshader" id="3_xi7w4"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pmrub"]
 albedo_texture = ExtResource("2_xi7w4")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_l4a7v"]
-albedo_texture = ExtResource("3_ctnk4")
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ctnk4"]
+render_priority = 0
+shader = ExtResource("3_xi7w4")
+shader_parameter/albedo_texture = ExtResource("3_ctnk4")
+shader_parameter/CAMERA_POSITION = Vector3(0, 0, 0)
+shader_parameter/fade_distance = 0.5
 
 [node name="character" instance=ExtResource("1_047ie")]
 
@@ -16,7 +21,7 @@ albedo_texture = ExtResource("3_ctnk4")
 surface_material_override/0 = SubResource("StandardMaterial3D_pmrub")
 
 [node name="IDontGetPaidEnoughForThis Remeshed" parent="Skeleton3D" index="1"]
-surface_material_override/0 = SubResource("StandardMaterial3D_l4a7v")
+surface_material_override/0 = SubResource("ShaderMaterial_ctnk4")
 
 [node name="AnimationPlayer" parent="." index="1"]
 speed_scale = 1.725

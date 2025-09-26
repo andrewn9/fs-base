@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://pm7bbtq72irj"]
+[gd_scene load_steps=15 format=3 uid="uid://pm7bbtq72irj"]
 
 [ext_resource type="PackedScene" uid="uid://bqnh7espkihvs" path="res://game/map.tscn" id="1_f3sb7"]
 [ext_resource type="Script" uid="uid://4mfbowtxi056" path="res://game/World.cs" id="1_fhh06"]
@@ -6,6 +6,7 @@
 [ext_resource type="Material" uid="uid://1dq78khd15jk" path="res://blend/mat/white_brick.tres" id="3_805w3"]
 [ext_resource type="PackedScene" uid="uid://delu2qjrw6teu" path="res://ext/addons/Mirror3D/Mirror3D.tscn" id="3_tvmmn"]
 [ext_resource type="PackedScene" uid="uid://b16vc4vs2cpuf" path="res://blend/construct.blend" id="4_4xpgs"]
+[ext_resource type="PackedScene" uid="uid://dnr40iy02t1t0" path="res://game/hud.tscn" id="4_m4twg"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ibklf"]
 size = Vector3(0.6, 0.6, 0.6)
@@ -66,15 +67,7 @@ sky_mode = 1
 [node name="map" parent="." instance=ExtResource("1_f3sb7")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.3256025, 0)
 
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
-follow_viewport_enabled = true
-
-[node name="Label" type="Label" parent="CanvasLayer"]
-offset_left = 4.0
-offset_top = 3.0
-offset_right = 319.0
-offset_bottom = 391.0
-autowrap_mode = 1
+[node name="CanvasLayer" parent="." instance=ExtResource("4_m4twg")]
 
 [node name="Mirror3D1" parent="." instance=ExtResource("3_tvmmn")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -23.407686, -4.169388, 4.6425714)

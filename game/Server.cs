@@ -1,4 +1,5 @@
 using Godot;
+using Godot.Collections;
 using System;
 
 public partial class Server : Node3D
@@ -65,6 +66,7 @@ public partial class Server : Node3D
 		character.Name = "Player" + peer;
 		character.SetMultiplayerAuthority(peer);
 		character.GetNode<Node3D>("CharacterBody3D").SetMultiplayerAuthority(peer);
+		character.GetNode<Label3D>("Label3D").Text = "ah";
 
 		Node spawns = world.GetNode<Node>("Spawns");
 		Node3D spawnPoint = spawns.GetChild<Node3D>((int)(GD.Randi() % spawns.GetChildCount()));

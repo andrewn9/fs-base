@@ -1,10 +1,17 @@
-[gd_scene load_steps=7 format=3 uid="uid://c5otnp5hf2eri"]
+[gd_scene load_steps=9 format=3 uid="uid://c5otnp5hf2eri"]
 
 [ext_resource type="Script" uid="uid://bxo6um3ah2lg8" path="res://game/entities/Character.cs" id="1_dki1m"]
 [ext_resource type="Script" uid="uid://djd5fd0fuo7ti" path="res://game/entities/Movement.cs" id="2_q0wq5"]
 [ext_resource type="PackedScene" uid="uid://rgtfqphm7hvb" path="res://blend/model.tscn" id="3_sol7g"]
 [ext_resource type="Script" uid="uid://b75jdbok87ad8" path="res://game/entities/Grab.cs" id="4_ek110"]
 [ext_resource type="Script" uid="uid://dn38si0r1i8g0" path="res://game/entities/HeadCull.cs" id="4_q0wq5"]
+[ext_resource type="Shader" uid="uid://cqxouy2qypo0e" path="res://head_cull.gdshader" id="4_sol7g"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_q0wq5"]
+render_priority = 0
+shader = ExtResource("4_sol7g")
+shader_parameter/CAMERA_POSITION = Vector3(0, 0.626, 0)
+shader_parameter/FADE_DISTANCE = 0.0
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_it3p1"]
 radius = 0.19824219
@@ -22,16 +29,33 @@ CameraBobLandAmplitude = -0.7
 
 [node name="model" parent="CharacterBody3D" instance=ExtResource("3_sol7g")]
 
+[node name="Skeleton3D" parent="CharacterBody3D/model" index="0"]
+bones/6/rotation = Quaternion(-0.003888778, 0.07020163, 0.997079, -0.02983473)
+bones/11/rotation = Quaternion(0.0038884517, 0.07020158, 0.997079, 0.029834729)
+bones/15/rotation = Quaternion(0.7071066, -0.00047333402, -0.0004730539, 0.7071066)
+bones/17/rotation = Quaternion(0.7071066, 0.0004730539, 0.00047333402, 0.7071066)
+
+[node name="IDontGetPaidEnoughForThis Remeshed" parent="CharacterBody3D/model/Skeleton3D" index="1"]
+surface_material_override/0 = SubResource("ShaderMaterial_q0wq5")
+
 [node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterBody3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.42930603, 0)
 shape = SubResource("CapsuleShape3D_it3p1")
 
-[node name="Camera3D" type="Camera3D" parent="CharacterBody3D"]
+[node name="Camera3D" type="Camera3D" parent="CharacterBody3D" node_paths=PackedStringArray("_meshInstance")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.626, -0.12466496)
 fov = 90.0
 script = ExtResource("4_q0wq5")
+_meshInstance = NodePath("../model/Skeleton3D/IDontGetPaidEnoughForThis Remeshed")
 
 [node name="Node" type="Node" parent="CharacterBody3D"]
 script = ExtResource("4_ek110")
+
+[node name="Label3D" type="Label3D" parent="CharacterBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.89023423, 0)
+billboard = 1
+shaded = true
+text = "{username}"
+font_size = 22
 
 [editable path="CharacterBody3D/model"]
