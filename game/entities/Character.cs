@@ -37,8 +37,6 @@ public partial class Character : Node3D
         animationPlayer = GetNode<AnimationPlayer>("CharacterBody3D/model/AnimationPlayer");
         movement = controller as Movement;
         client = GetNode<Client>("/root/Client");
-        skeleton = GetNode<Skeleton3D>("CharacterBody3D/model/Skeleton3D");
-        headBoneIndex = skeleton.FindBone("Head");
 
         GD.Print("I'm here");
     }
@@ -102,21 +100,6 @@ public partial class Character : Node3D
         if (client == null || !client.Loaded)
             return;
 
-        if (movement.Velocity.Length() > 0.3f)
-        {
-            if (!animationPlayer.IsPlaying() || animationPlayer.CurrentAnimation != "Run")
-            {
-                animationPlayer.Play("Run");
-            }
-        }
-        else
-        {
-            if (!animationPlayer.IsPlaying() || animationPlayer.CurrentAnimation != "Idle")
-            {
-                animationPlayer.Play("Idle");
-            }
-        }
-
         if (!IsMultiplayerAuthority())
         {
             return;
@@ -155,17 +138,6 @@ public partial class Character : Node3D
             movement.LookVector = _latestLookVec;
             movement.Move(_latestMoveDir, delta);
         }
-
-        // Make head bone follow look direction
-        Vector3 neckDir = _latestLookVec % (2*Mathf.Pi);
-        neckDir.X = _latestLookVec.X;
-        neckDir.X *= -1;
-        neckDir.X = Mathf.Clamp(neckDir.X, -Mathf.Pi / 4, Mathf.Pi / 2);
-        neckDir.Y = Mathf.Clamp(neckDir.Y, -Mathf.Pi / 8, Mathf.Pi / 8);
-
-        var headRotation = new Basis(Quaternion.FromEuler(neckDir));
-        skeleton.SetBonePose(headBoneIndex, new Transform3D(headRotation, skeleton.GetBonePose(headBoneIndex).Origin));
-
         // Smoothly interpolate to authoritative transform
         if (!IsMultiplayerAuthority())
         {

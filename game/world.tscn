@@ -20,7 +20,6 @@ properties/1/spawn = true
 properties/1/replication_mode = 2
 
 [sub_resource type="Environment" id="Environment_4xpgs"]
-glow_enabled = true
 glow_intensity = 2.6
 volumetric_fog_enabled = true
 volumetric_fog_density = 0.0063
@@ -72,7 +71,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.3256025, 0)
 [node name="Mirror3D1" parent="." instance=ExtResource("3_tvmmn")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -23.407686, -4.169388, 4.6425714)
 size = Vector2(16.625, 3.7)
-pixels_per_unit = 51
+pixels_per_unit = 100
 use_linear_filter = false
 color = Color(1, 1, 1, 1)
 distortion_texture = SubResource("NoiseTexture2D_4xpgs")

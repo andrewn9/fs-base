@@ -1,17 +1,19 @@
 using Godot;
 using System;
 using Godot.Collections;
+using System.Dynamic;
 
 public partial class Grab : Node
 {
 	private Camera3D camera;
 	private float holdDistance = 1.0f;
 	private float grabStrength = 45.0f;
-	private RigidBody3D heldObject = null;
+	public RigidBody3D heldObject { get; private set; } = null;
 	private Vector3 origin;
 	private Vector3 direction;
+    public Vector3 toPosition { get; private set; }
 
-	public override void _Ready()
+    public override void _Ready()
 	{
 		camera = GetNode<Camera3D>("../Camera3D");
 	}
@@ -31,7 +33,7 @@ public partial class Grab : Node
 
 			if (result.Count > 0)
 			{
-				// GD.Print("Hit result: ", result);
+				GD.Print("Hit result: ", result);
 
 				if (result.TryGetValue("collider", out Variant colliderVariant))
 				{
@@ -96,7 +98,7 @@ public partial class Grab : Node
 	{
 		if (heldObject != null)
 		{
-			Vector3 toPosition = camera.GlobalPosition + direction * holdDistance;
+			toPosition = camera.GlobalPosition + direction * holdDistance;
 			heldObject.LinearVelocity = grabStrength * (toPosition - heldObject.GlobalPosition);
 		}
     }

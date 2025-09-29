@@ -1,17 +1,24 @@
-[gd_scene load_steps=9 format=3 uid="uid://c5otnp5hf2eri"]
+[gd_scene load_steps=14 format=3 uid="uid://c5otnp5hf2eri"]
 
 [ext_resource type="Script" uid="uid://bxo6um3ah2lg8" path="res://game/entities/Character.cs" id="1_dki1m"]
 [ext_resource type="Script" uid="uid://djd5fd0fuo7ti" path="res://game/entities/Movement.cs" id="2_q0wq5"]
 [ext_resource type="PackedScene" uid="uid://rgtfqphm7hvb" path="res://blend/model.tscn" id="3_sol7g"]
 [ext_resource type="Script" uid="uid://b75jdbok87ad8" path="res://game/entities/Grab.cs" id="4_ek110"]
+[ext_resource type="Script" uid="uid://bj3navcd7yhj5" path="res://game/entities/Animate.cs" id="4_nuf5p"]
 [ext_resource type="Script" uid="uid://dn38si0r1i8g0" path="res://game/entities/HeadCull.cs" id="4_q0wq5"]
-[ext_resource type="Shader" uid="uid://cqxouy2qypo0e" path="res://head_cull.gdshader" id="4_sol7g"]
+[ext_resource type="Shader" uid="uid://cqxouy2qypo0e" path="res://head_cull.gdshader" id="5_7xs2g"]
+[ext_resource type="Script" uid="uid://3hwi6jgt50jt" path="res://game/entities/IkController.cs" id="5_ek110"]
+[ext_resource type="Material" uid="uid://bgeypuyurkmsl" path="res://blend/dither.material" id="5_nuf5p"]
+[ext_resource type="Texture2D" uid="uid://bx2wha4du01ma" path="res://blend/tex/HatTexture_Baked.png" id="6_700m2"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_q0wq5"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_5p5ai"]
 render_priority = 0
-shader = ExtResource("4_sol7g")
-shader_parameter/CAMERA_POSITION = Vector3(0, 0.626, 0)
-shader_parameter/FADE_DISTANCE = 0.0
+shader = ExtResource("5_7xs2g")
+shader_parameter/albedo_texture = ExtResource("6_700m2")
+shader_parameter/THRESHOLD = 0.5
+
+[sub_resource type="BoxMesh" id="BoxMesh_ek110"]
+size = Vector3(0.05, 0.05, 0.05)
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_it3p1"]
 radius = 0.19824219
@@ -28,15 +35,35 @@ CameraBobSideAmplitude = 0.035
 CameraBobLandAmplitude = -0.7
 
 [node name="model" parent="CharacterBody3D" instance=ExtResource("3_sol7g")]
+script = ExtResource("4_nuf5p")
 
 [node name="Skeleton3D" parent="CharacterBody3D/model" index="0"]
-bones/6/rotation = Quaternion(-0.003888778, 0.07020163, 0.997079, -0.02983473)
-bones/11/rotation = Quaternion(0.0038884517, 0.07020158, 0.997079, 0.029834729)
-bones/15/rotation = Quaternion(0.7071066, -0.00047333402, -0.0004730539, 0.7071066)
-bones/17/rotation = Quaternion(0.7071066, 0.0004730539, 0.00047333402, 0.7071066)
+bones/2/rotation = Quaternion(0, 0, 0, 1)
+
+[node name="Hat" parent="CharacterBody3D/model/Skeleton3D" index="0"]
+visibility_range_begin = 0.75
+surface_material_override/0 = SubResource("ShaderMaterial_5p5ai")
 
 [node name="IDontGetPaidEnoughForThis Remeshed" parent="CharacterBody3D/model/Skeleton3D" index="1"]
-surface_material_override/0 = SubResource("ShaderMaterial_q0wq5")
+surface_material_override/0 = ExtResource("5_nuf5p")
+
+[node name="IKController" type="Node" parent="CharacterBody3D/model" node_paths=PackedStringArray("skeleton", "handTarget")]
+script = ExtResource("5_ek110")
+skeleton = NodePath("../Skeleton3D")
+headBoneIndex = 2
+lowerLeftArmBoneIndex = 5
+lowerRightArmBoneIndex = 10
+upperLeftArmBoneIndex = 4
+upperRightArmBoneIndex = 9
+handTarget = NodePath("HandTarget")
+handTargetPosition = Vector3(0.24154094, 0.5434084, -0.09672254)
+skeletonLocalHandTargetPosition = Vector3(0.24154094, 0.5434084, -0.09672254)
+finalTransform = Transform3D(-0.22962429, -0.38220125, -0.89509493, 0, 0.9196691, -0.3926943, 0.97327936, -0.09017215, -0.21117836, 2, 1, -1)
+
+[node name="HandTarget" type="Node3D" parent="CharacterBody3D/model/IKController"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="CharacterBody3D/model/IKController/HandTarget"]
+mesh = SubResource("BoxMesh_ek110")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterBody3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.42930603, 0)
@@ -48,7 +75,7 @@ fov = 90.0
 script = ExtResource("4_q0wq5")
 _meshInstance = NodePath("../model/Skeleton3D/IDontGetPaidEnoughForThis Remeshed")
 
-[node name="Node" type="Node" parent="CharacterBody3D"]
+[node name="Grab" type="Node" parent="CharacterBody3D"]
 script = ExtResource("4_ek110")
 
 [node name="Label3D" type="Label3D" parent="CharacterBody3D"]

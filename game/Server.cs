@@ -14,7 +14,8 @@ public partial class Server : Node3D
 		MapSpawner = GetNode<MultiplayerSpawner>("MapSpawner");
 		CharacterSpawner = GetNode<MultiplayerSpawner>("CharacterSpawner");
 		MapSpawner.SpawnFunction = new Callable(this, nameof(SpawnWorld));
-		CharacterSpawner.SpawnFunction = new Callable(this, nameof(SpawnCharacter));
+	// MultiplayerSpawner expects a function with (int peer, Variant customData)
+	CharacterSpawner.SpawnFunction = Callable.From((Variant customData) => SpawnCharacter(customData));
 
 		if (Multiplayer.IsServer())
 		{
@@ -47,7 +48,7 @@ public partial class Server : Node3D
 		return world;
 	}
 
-	private Node SpawnCharacter(int peer)
+	private Node SpawnCharacter(Variant customData)
 	{
 		var characterScene = GD.Load<PackedScene>("res://game/entities/character.tscn");
 		if (characterScene == null)
@@ -63,11 +64,22 @@ public partial class Server : Node3D
 			return null;
 		}
 
-		character.Name = "Player" + peer;
-		character.SetMultiplayerAuthority(peer);
-		character.GetNode<Node3D>("CharacterBody3D").SetMultiplayerAuthority(peer);
-		character.GetNode<Label3D>("Label3D").Text = "ah";
+		int peer = Multiplayer.GetRemoteSenderId();
+		var label = character.GetNode<Node3D>("CharacterBody3D").GetNode<Label3D>("Label3D");
+		if (customData.VariantType == Variant.Type.Dictionary)
+		{
+			var clientInfo = (Dictionary)customData;
+			if (clientInfo.ContainsKey("name"))
+				label.Text = clientInfo["name"].AsString();
+				
+			if (clientInfo.ContainsKey("id"))
+				peer = clientInfo["id"].AsInt32();
+		}
 
+	character.Name = "Player" + peer;
+	character.SetMultiplayerAuthority(peer);
+	character.GetNode<Node3D>("CharacterBody3D").SetMultiplayerAuthority(peer);
+		// Set Label3D text to player name from client info
 		Node spawns = world.GetNode<Node>("Spawns");
 		Node3D spawnPoint = spawns.GetChild<Node3D>((int)(GD.Randi() % spawns.GetChildCount()));
 		character.spawnPosition = spawnPoint.GlobalPosition;

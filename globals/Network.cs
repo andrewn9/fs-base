@@ -71,7 +71,7 @@ public partial class Network : Node
                 GD.Print("waiting for host world to be ready...");
                 await ToSignal(GetTree().CreateTimer(0.5f), "timeout");
             }
-            client.server.CharacterSpawner.Spawn(senderId);
+            client.server.CharacterSpawner.Spawn(clientInfo);
         }
     }
 

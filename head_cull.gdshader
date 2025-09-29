@@ -1,8 +1,7 @@
 shader_type spatial;
 
 uniform sampler2D albedo_texture : source_color;
-uniform vec3 CAMERA_POSITION;
-uniform float FADE_DISTANCE = 2.0; // Distance within which to start fading
+uniform float THRESHOLD;
 
 varying vec3 world_vertex;
 
@@ -12,16 +11,21 @@ void vertex() {
 
 void fragment() {
     vec4 tex_color = texture(albedo_texture, UV);
-    
-    float camDist = distance(CAMERA_POSITION, world_vertex);
-    
-    // Fade when close to the camera
-    float alpha = smoothstep(0.0, FADE_DISTANCE, camDist);
-    
+    const mat4 bayer_matrix_4x4 = mat4(
+	    vec4(    -0.5,       0.0,  -0.375,   0.125 ),
+	    vec4(    0.25,   -0.25,   0.375, - 0.125 ),
+	    vec4( -0.3125,  0.1875, -0.4375,  0.0625 ),
+	    vec4(  0.4375, -0.0625,  0.3125, -0.1875 )
+	);
+	
+    float alpha = COLOR.r;
+	vec2 SCREEN_CORDS = FRAGCOORD.xy;
+	
+	float bayer_shift = bayer_matrix_4x4[int(mod(SCREEN_CORDS.x, 4.0))][int(mod(SCREEN_CORDS.y, 4.0))];
+    alpha += bayer_shift;
     ALBEDO = tex_color.rgb;
-    ALPHA = tex_color.a * alpha;
-
-    if (ALPHA <= 0.0) {
-        discard;
-    }
+    
+	if (alpha < THRESHOLD) {
+		discard;
+	}
 }
