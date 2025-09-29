@@ -41,7 +41,6 @@ script = ExtResource("4_nuf5p")
 bones/2/rotation = Quaternion(0, 0, 0, 1)
 
 [node name="Hat" parent="CharacterBody3D/model/Skeleton3D" index="0"]
-visibility_range_begin = 0.75
 surface_material_override/0 = SubResource("ShaderMaterial_5p5ai")
 
 [node name="IDontGetPaidEnoughForThis Remeshed" parent="CharacterBody3D/model/Skeleton3D" index="1"]
@@ -69,11 +68,11 @@ mesh = SubResource("BoxMesh_ek110")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.42930603, 0)
 shape = SubResource("CapsuleShape3D_it3p1")
 
-[node name="Camera3D" type="Camera3D" parent="CharacterBody3D" node_paths=PackedStringArray("_meshInstance")]
+[node name="Camera3D" type="Camera3D" parent="CharacterBody3D" node_paths=PackedStringArray("_meshInstances")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.626, -0.12466496)
 fov = 90.0
 script = ExtResource("4_q0wq5")
-_meshInstance = NodePath("../model/Skeleton3D/IDontGetPaidEnoughForThis Remeshed")
+_meshInstances = [null, null]
 
 [node name="Grab" type="Node" parent="CharacterBody3D"]
 script = ExtResource("4_ek110")

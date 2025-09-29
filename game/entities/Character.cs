@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using Godot;
 
 public partial class Character : Node3D
@@ -29,16 +30,16 @@ public partial class Character : Node3D
     private const float InterpSpeed = 10f; // Higher = faster interpolation
 
     private Client client;
+    HeadCull headCull;
 
     public override void _Ready()
     {
         GlobalPosition = spawnPosition;
         controller = GetNode<CharacterBody3D>("CharacterBody3D");
+        headCull = GetNode<HeadCull>("CharacterBody3D/Camera3D");
         animationPlayer = GetNode<AnimationPlayer>("CharacterBody3D/model/AnimationPlayer");
         movement = controller as Movement;
         client = GetNode<Client>("/root/Client");
-
-        GD.Print("I'm here");
     }
     // Called by local client to send input to server
     public void SendInput(Vector2 moveDir, Vector3 lookVec)

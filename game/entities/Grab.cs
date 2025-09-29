@@ -81,6 +81,9 @@ public partial class Grab : Node
 
 	public override void _Process(double delta)
 	{
+		if (!IsMultiplayerAuthority())
+			return;
+
 		origin = camera.GlobalTransform.Origin;
 		direction = -camera.GlobalTransform.Basis.Z;
 

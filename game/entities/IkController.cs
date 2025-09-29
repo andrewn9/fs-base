@@ -71,7 +71,6 @@ public partial class IkController : Node
 			Vector3 targetInSkeletonSpace = skeletonGlobal.Basis.Inverse() * (handTargetPosition - skeletonGlobal.Origin);
 			Vector3 targetInBonePoseSpace = boneGlobalRest.Basis.Inverse() * (targetInSkeletonSpace - boneGlobalRest.Origin);
 
-
 			Quaternion targetRotation = Quaternion.FromEuler(handTarget.Rotation);
 
 			skeleton.SetBonePosePosition(lowerRightArmBoneIndex, targetInBonePoseSpace);
