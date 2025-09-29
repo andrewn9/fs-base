@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://c5otnp5hf2eri"]
+[gd_scene load_steps=15 format=3 uid="uid://c5otnp5hf2eri"]
 
 [ext_resource type="Script" uid="uid://bxo6um3ah2lg8" path="res://game/entities/Character.cs" id="1_dki1m"]
 [ext_resource type="Script" uid="uid://djd5fd0fuo7ti" path="res://game/entities/Movement.cs" id="2_q0wq5"]
@@ -20,6 +20,14 @@ shader_parameter/THRESHOLD = 0.5
 [sub_resource type="BoxMesh" id="BoxMesh_ek110"]
 size = Vector3(0.05, 0.05, 0.05)
 
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_7xs2g"]
+properties/0/path = NodePath(".:handTargetPosition")
+properties/0/spawn = true
+properties/0/replication_mode = 2
+properties/1/path = NodePath("../../Grab:holdingItem")
+properties/1/spawn = true
+properties/1/replication_mode = 2
+
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_it3p1"]
 radius = 0.19824219
 height = 0.91970825
@@ -39,6 +47,10 @@ script = ExtResource("4_nuf5p")
 
 [node name="Skeleton3D" parent="CharacterBody3D/model" index="0"]
 bones/2/rotation = Quaternion(0, 0, 0, 1)
+bones/6/rotation = Quaternion(-0.003888778, 0.07020163, 0.997079, -0.02983473)
+bones/11/rotation = Quaternion(0.0038884517, 0.07020158, 0.997079, 0.029834729)
+bones/15/rotation = Quaternion(0.7071066, -0.00047333402, -0.0004730539, 0.7071066)
+bones/17/rotation = Quaternion(0.7071066, 0.0004730539, 0.00047333402, 0.7071066)
 
 [node name="Hat" parent="CharacterBody3D/model/Skeleton3D" index="0"]
 surface_material_override/0 = SubResource("ShaderMaterial_5p5ai")
@@ -55,14 +67,16 @@ lowerRightArmBoneIndex = 10
 upperLeftArmBoneIndex = 4
 upperRightArmBoneIndex = 9
 handTarget = NodePath("HandTarget")
-handTargetPosition = Vector3(0.24154094, 0.5434084, -0.09672254)
 skeletonLocalHandTargetPosition = Vector3(0.24154094, 0.5434084, -0.09672254)
-finalTransform = Transform3D(-0.22962429, -0.38220125, -0.89509493, 0, 0.9196691, -0.3926943, 0.97327936, -0.09017215, -0.21117836, 2, 1, -1)
 
 [node name="HandTarget" type="Node3D" parent="CharacterBody3D/model/IKController"]
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="CharacterBody3D/model/IKController/HandTarget"]
 mesh = SubResource("BoxMesh_ek110")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="CharacterBody3D/model/IKController"]
+delta_interval = 0.06
+replication_config = SubResource("SceneReplicationConfig_7xs2g")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterBody3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.42930603, 0)
@@ -72,7 +86,7 @@ shape = SubResource("CapsuleShape3D_it3p1")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.626, -0.12466496)
 fov = 90.0
 script = ExtResource("4_q0wq5")
-_meshInstances = [null, null]
+_meshInstances = [NodePath("../model/Skeleton3D/Hat"), NodePath("../model/Skeleton3D/IDontGetPaidEnoughForThis Remeshed")]
 
 [node name="Grab" type="Node" parent="CharacterBody3D"]
 script = ExtResource("4_ek110")

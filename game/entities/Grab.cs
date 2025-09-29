@@ -6,6 +6,8 @@ using System.Dynamic;
 public partial class Grab : Node
 {
 	private Camera3D camera;
+	[Export]
+	public bool holdingItem { get; set; } = false;
 	private float holdDistance = 1.0f;
 	private float grabStrength = 45.0f;
 	public RigidBody3D heldObject { get; private set; } = null;
@@ -65,9 +67,10 @@ public partial class Grab : Node
 		{
 			body.SetMultiplayerAuthority(Multiplayer.GetRemoteSenderId());
 			body.AddToGroup("grabbed");
+			holdingItem = true;
 		}
 	}
-	
+
 	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
 	private void _releaseGrab(NodePath bodyPath)
 	{
@@ -77,6 +80,7 @@ public partial class Grab : Node
 			body.SetMultiplayerAuthority(1);
 			body.RemoveFromGroup("grabbed");
 		}
+		holdingItem = false;
 	}
 
 	public override void _Process(double delta)

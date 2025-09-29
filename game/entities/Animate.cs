@@ -41,7 +41,6 @@ public partial class Animate : Node3D
 		// Make head bone follow look direction
 		ikController.headLookVector = movement.LookVector % (2 * Mathf.Pi);
 		ikController.handTarget.Position = grab.toPosition;
-		ikController.active = grab.heldObject != null;
 
 		// // Make arms grab toPosition
 		// if (grab.heldObject != null)

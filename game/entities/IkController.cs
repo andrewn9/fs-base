@@ -4,6 +4,9 @@ public partial class IkController : Node
 {
 	[Export]
     public Skeleton3D skeleton { get; set; }
+
+	[Export]
+	public Grab grab { get; set; }
 	[Export]
     public int headBoneIndex { get; set; }
 	[Export]
@@ -23,26 +26,23 @@ public partial class IkController : Node
 	public Vector3 handTargetPosition { get; set; }
 	[Export]
 	public Vector3 skeletonLocalHandTargetPosition { get; set; }
-	// Called when the node enters the scene tree for the first time.
 
-	[Export]
-	public Vector3 handOffset { get; set; } = Vector3.Zero;
-
-	[Export]
-	Transform3D finalTransform = Transform3D.Identity;
-
-	[Export]
-	public bool active;
-
+	private MultiplayerSynchronizer sync;
 	public override void _Ready()
 	{
+		grab = GetNode<Grab>("../../Grab");
+		sync = GetNode<MultiplayerSynchronizer>("../../MultiplayerSynchronizer");
+		
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
 	{
 		if (skeleton == null)
+		{
+			GD.Print("no skeleton");
 			return;
+		}
 		if (Engine.IsEditorHint())
 		{
 			headBoneIndex = skeleton.FindBone("Head");
@@ -59,26 +59,41 @@ public partial class IkController : Node
 		var headRotation = new Basis(Quaternion.FromEuler(neckDir));
 		skeleton.SetBonePose(headBoneIndex, new Transform3D(headRotation, skeleton.GetBonePose(headBoneIndex).Origin));
 
-		if (handTarget != null && active)
+		if (handTarget != null && IsMultiplayerAuthority())
 		{
 			handTargetPosition = handTarget.GlobalPosition;
-			skeletonLocalHandTargetPosition = skeleton.ToLocal(handTargetPosition);
-
-			Transform3D boneGlobalRest = skeleton.GetBoneGlobalRest(lowerRightArmBoneIndex);
-			Transform3D skeletonGlobal = skeleton.GlobalTransform;
-
-			// Convert target global position to skeleton local space
-			Vector3 targetInSkeletonSpace = skeletonGlobal.Basis.Inverse() * (handTargetPosition - skeletonGlobal.Origin);
-			Vector3 targetInBonePoseSpace = boneGlobalRest.Basis.Inverse() * (targetInSkeletonSpace - boneGlobalRest.Origin);
-
-			Quaternion targetRotation = Quaternion.FromEuler(handTarget.Rotation);
-
-			skeleton.SetBonePosePosition(lowerRightArmBoneIndex, targetInBonePoseSpace);
-			skeleton.SetBonePoseRotation(lowerRightArmBoneIndex, targetRotation);
 		}
-		else
+
+		if (grab != null)
 		{
-			skeleton.ResetBonePose(lowerRightArmBoneIndex);
+			if (grab.holdingItem)
+			{
+				if (!IsMultiplayerAuthority() && Engine.IsEditorHint() == false)
+				{
+					GD.Print($"other guy is grabbing to {handTargetPosition}");
+				}
+				else
+				{
+					GD.Print($"I am grabbing to {handTargetPosition}");
+				}
+				skeletonLocalHandTargetPosition = skeleton.ToLocal(handTargetPosition);
+
+				Transform3D boneGlobalRest = skeleton.GetBoneGlobalRest(lowerRightArmBoneIndex);
+				Transform3D skeletonGlobal = skeleton.GlobalTransform;
+
+				// Convert target global position to skeleton local space
+				Vector3 targetInSkeletonSpace = skeletonGlobal.Basis.Inverse() * (handTargetPosition - skeletonGlobal.Origin);
+				Vector3 targetInBonePoseSpace = boneGlobalRest.Basis.Inverse() * (targetInSkeletonSpace - boneGlobalRest.Origin);
+
+				Quaternion targetRotation = Quaternion.FromEuler(handTarget.Rotation);
+
+				skeleton.SetBonePosePosition(lowerRightArmBoneIndex, targetInBonePoseSpace);
+				skeleton.SetBonePoseRotation(lowerRightArmBoneIndex, targetRotation);
+			}
+			else
+			{
+				skeleton.ResetBonePose(lowerRightArmBoneIndex);
+			}
 		}
 	}
 }

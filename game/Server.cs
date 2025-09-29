@@ -80,9 +80,9 @@ public partial class Server : Node3D
 	character.SetMultiplayerAuthority(peer);
 	character.GetNode<Node3D>("CharacterBody3D").SetMultiplayerAuthority(peer);
 
-	foreach (var child in character.GetNode<Node3D>("CharacterBody3D").GetChildren())
+	foreach (var child in character.GetNode<Node>("CharacterBody3D").GetChildren())
 	{
-		if  (!(child is Node3D))
+		if  (!(child is Node))
 			continue;
 		
 		child.SetMultiplayerAuthority(peer);
