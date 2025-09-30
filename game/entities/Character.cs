@@ -37,7 +37,7 @@ public partial class Character : Node3D
         GlobalPosition = spawnPosition;
         controller = GetNode<CharacterBody3D>("CharacterBody3D");
         headCull = GetNode<HeadCull>("CharacterBody3D/Camera3D");
-        animationPlayer = GetNode<AnimationPlayer>("CharacterBody3D/model/AnimationPlayer");
+        animationPlayer = GetNode<AnimationPlayer>("CharacterBody3D/Model/AnimationPlayer");
         movement = controller as Movement;
         client = GetNode<Client>("/root/Client");
     }

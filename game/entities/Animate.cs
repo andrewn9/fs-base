@@ -15,9 +15,6 @@ public partial class Animate : Node3D
 		animationPlayer = GetNode<AnimationPlayer>("AnimationPlayer");
 		grab = GetParent().GetNode<Grab>("Grab");
 		ikController = GetNode<IkController>("IKController");
-		ikController.headBoneIndex = skeleton.FindBone("Head");
-		ikController.lowerLeftArmBoneIndex = skeleton.FindBone("LowerArm.L");
-		ikController.lowerRightArmBoneIndex = skeleton.FindBone("LowerArm.R");
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -40,8 +37,7 @@ public partial class Animate : Node3D
 
 		// Make head bone follow look direction
 		ikController.headLookVector = movement.LookVector % (2 * Mathf.Pi);
-		ikController.handTarget.Position = grab.toPosition;
-
+		
 		// // Make arms grab toPosition
 		// if (grab.heldObject != null)
 		// {

@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://c5otnp5hf2eri"]
+[gd_scene load_steps=14 format=3 uid="uid://c5otnp5hf2eri"]
 
 [ext_resource type="Script" uid="uid://bxo6um3ah2lg8" path="res://game/entities/Character.cs" id="1_dki1m"]
 [ext_resource type="Script" uid="uid://djd5fd0fuo7ti" path="res://game/entities/Movement.cs" id="2_q0wq5"]
@@ -17,16 +17,16 @@ shader = ExtResource("5_7xs2g")
 shader_parameter/albedo_texture = ExtResource("6_700m2")
 shader_parameter/THRESHOLD = 0.5
 
-[sub_resource type="BoxMesh" id="BoxMesh_ek110"]
-size = Vector3(0.05, 0.05, 0.05)
-
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_7xs2g"]
-properties/0/path = NodePath(".:handTargetPosition")
+properties/0/path = NodePath("../Skeleton3D/RightArm:active")
 properties/0/spawn = true
 properties/0/replication_mode = 2
-properties/1/path = NodePath("../../Grab:holdingItem")
+properties/1/path = NodePath("RightArm:position")
 properties/1/spawn = true
 properties/1/replication_mode = 2
+properties/2/path = NodePath("LeftArm:position")
+properties/2/spawn = true
+properties/2/replication_mode = 2
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_it3p1"]
 radius = 0.19824219
@@ -42,39 +42,59 @@ PushForceScalar = 0.25
 CameraBobSideAmplitude = 0.035
 CameraBobLandAmplitude = -0.7
 
-[node name="model" parent="CharacterBody3D" instance=ExtResource("3_sol7g")]
+[node name="Model" parent="CharacterBody3D" instance=ExtResource("3_sol7g")]
 script = ExtResource("4_nuf5p")
 
-[node name="Skeleton3D" parent="CharacterBody3D/model" index="0"]
+[node name="Skeleton3D" parent="CharacterBody3D/Model" index="0"]
 bones/2/rotation = Quaternion(0, 0, 0, 1)
-bones/6/rotation = Quaternion(-0.003888778, 0.07020163, 0.997079, -0.02983473)
-bones/11/rotation = Quaternion(0.0038884517, 0.07020158, 0.997079, 0.029834729)
-bones/15/rotation = Quaternion(0.7071066, -0.00047333402, -0.0004730539, 0.7071066)
-bones/17/rotation = Quaternion(0.7071066, 0.0004730539, 0.00047333402, 0.7071066)
+bones/4/scale = Vector3(1, 0.9379271, 1)
+bones/9/scale = Vector3(1, 0.8607978, 1)
 
-[node name="Hat" parent="CharacterBody3D/model/Skeleton3D" index="0"]
+[node name="Hat" parent="CharacterBody3D/Model/Skeleton3D" index="0"]
 surface_material_override/0 = SubResource("ShaderMaterial_5p5ai")
 
-[node name="IDontGetPaidEnoughForThis Remeshed" parent="CharacterBody3D/model/Skeleton3D" index="1"]
+[node name="IDontGetPaidEnoughForThis Remeshed" parent="CharacterBody3D/Model/Skeleton3D" index="1"]
 surface_material_override/0 = ExtResource("5_nuf5p")
 
-[node name="IKController" type="Node" parent="CharacterBody3D/model" node_paths=PackedStringArray("skeleton", "handTarget")]
+[node name="RightArm" type="LookAtModifier3D" parent="CharacterBody3D/Model/Skeleton3D" index="2"]
+active = false
+target_node = NodePath("../../IKController/RightArm")
+bone_name = "UpperArm.R"
+bone = 9
+forward_axis = 2
+primary_rotation_axis = 0
+origin_offset = Vector3(0.04, -0.035, 0)
+
+[node name="LeftArm" type="LookAtModifier3D" parent="CharacterBody3D/Model/Skeleton3D" index="3"]
+active = false
+target_node = NodePath("../../IKController/LeftArm")
+bone_name = "UpperArm.L"
+bone = 4
+forward_axis = 2
+primary_rotation_axis = 0
+origin_offset = Vector3(-0.035, -0.04, 0)
+
+[node name="IKController" type="Node" parent="CharacterBody3D/Model" node_paths=PackedStringArray("skeleton", "LeftArmLookAt", "RightArmLookAt", "LeftHandMarker", "RightHandMarker")]
 script = ExtResource("5_ek110")
 skeleton = NodePath("../Skeleton3D")
 headBoneIndex = 2
-lowerLeftArmBoneIndex = 5
-lowerRightArmBoneIndex = 10
-upperLeftArmBoneIndex = 4
-upperRightArmBoneIndex = 9
-handTarget = NodePath("HandTarget")
-skeletonLocalHandTargetPosition = Vector3(0.24154094, 0.5434084, -0.09672254)
+LeftArmLookAt = NodePath("../Skeleton3D/LeftArm")
+RightArmLookAt = NodePath("../Skeleton3D/RightArm")
+LeftHandMarker = NodePath("LeftArm")
+RightHandMarker = NodePath("RightArm")
+ArmLength = 0.355
+upperArmR = 9
+handR = 10
+upperArmL = 4
+handL = 5
 
-[node name="HandTarget" type="Node3D" parent="CharacterBody3D/model/IKController"]
+[node name="RightArm" type="Marker3D" parent="CharacterBody3D/Model/IKController"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.24025452, 0.50258535, -0.030281156)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="CharacterBody3D/model/IKController/HandTarget"]
-mesh = SubResource("BoxMesh_ek110")
+[node name="LeftArm" type="Marker3D" parent="CharacterBody3D/Model/IKController"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.25717872, 0.51542753, -0.03804034)
 
-[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="CharacterBody3D/model/IKController"]
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="CharacterBody3D/Model/IKController"]
 delta_interval = 0.06
 replication_config = SubResource("SceneReplicationConfig_7xs2g")
 
@@ -86,7 +106,7 @@ shape = SubResource("CapsuleShape3D_it3p1")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.626, -0.12466496)
 fov = 90.0
 script = ExtResource("4_q0wq5")
-_meshInstances = [NodePath("../model/Skeleton3D/Hat"), NodePath("../model/Skeleton3D/IDontGetPaidEnoughForThis Remeshed")]
+_meshInstances = [NodePath("../Model/Skeleton3D/IDontGetPaidEnoughForThis Remeshed"), NodePath("../Model/Skeleton3D/Hat")]
 
 [node name="Grab" type="Node" parent="CharacterBody3D"]
 script = ExtResource("4_ek110")
@@ -98,4 +118,4 @@ shaded = true
 text = "{username}"
 font_size = 22
 
-[editable path="CharacterBody3D/model"]
+[editable path="CharacterBody3D/Model"]

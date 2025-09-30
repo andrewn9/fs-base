@@ -13,11 +13,14 @@ public partial class Grab : Node
 	public RigidBody3D heldObject { get; private set; } = null;
 	private Vector3 origin;
 	private Vector3 direction;
+	private IkController ikController;
     public Vector3 toPosition { get; private set; }
 
-    public override void _Ready()
+	public override void _Ready()
 	{
 		camera = GetNode<Camera3D>("../Camera3D");
+		Node model = GetParent().GetNode("Model");
+		ikController = model.GetNode<IkController>("IKController");
 	}
 
 	public void queryGrab()
@@ -81,6 +84,8 @@ public partial class Grab : Node
 			body.RemoveFromGroup("grabbed");
 		}
 		holdingItem = false;
+		ikController.Release("left");
+		ikController.Release("right");
 	}
 
 	public override void _Process(double delta)
@@ -107,6 +112,8 @@ public partial class Grab : Node
 		{
 			toPosition = camera.GlobalPosition + direction * holdDistance;
 			heldObject.LinearVelocity = grabStrength * (toPosition - heldObject.GlobalPosition);
+			// ikController.Grab("left", heldObject.GlobalPosition);
+			ikController.Grab("right", heldObject.GlobalPosition);
 		}
     }
 
