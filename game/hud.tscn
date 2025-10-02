@@ -1,24 +1,108 @@
-[gd_scene format=3 uid="uid://dnr40iy02t1t0"]
+[gd_scene load_steps=6 format=3 uid="uid://dnr40iy02t1t0"]
 
-[node name="CanvasLayer" type="CanvasLayer"]
+[ext_resource type="Script" uid="uid://cd1y4a5t4e1ve" path="res://game/Hud.cs" id="1_d8ggh"]
+[ext_resource type="Environment" uid="uid://f2em43qd16fo" path="res://game/magnetaworld.tres" id="2_448qv"]
+
+[sub_resource type="Shader" id="Shader_448qv"]
+code = "shader_type canvas_item;
+
+uniform sampler2D screen_tex : source_color;
+
+void fragment() {
+    vec4 color = texture(screen_tex, UV);
+    if (color.a > 0.0) {
+        // Un-premultiply alpha (if needed)
+        color.rgb /= color.a;
+    }
+    COLOR = color;
+}
+"
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_448qv"]
+viewport_path = NodePath("SubViewportContainer/SubViewport")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_q6xfg"]
+resource_local_to_scene = true
+shader = SubResource("Shader_448qv")
+shader_parameter/screen_tex = SubResource("ViewportTexture_448qv")
+
+[node name="HUDRoot" type="CanvasLayer"]
 follow_viewport_enabled = true
+script = ExtResource("1_d8ggh")
 
 [node name="Label" type="Label" parent="."]
+visible = false
 offset_left = 4.0
 offset_top = 3.0
 offset_right = 319.0
 offset_bottom = 391.0
 autowrap_mode = 1
 
-[node name="ReferenceRect" type="Panel" parent="."]
+[node name="ColorRect" type="ColorRect" parent="."]
+visible = false
 anchors_preset = -1
-anchor_left = 0.95
-anchor_top = 0.95
+anchor_left = 0.10700001
+anchor_top = 0.74200004
+anchor_right = 0.10700001
+anchor_bottom = 0.74200004
+offset_left = -30.632004
+offset_top = -34.40802
+offset_right = 31.367996
+offset_bottom = -19.40802
+
+[node name="ColorRect" type="ColorRect" parent="ColorRect"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -1.0
+offset_top = -0.5
+offset_right = 9.0
+offset_bottom = 9.5
+rotation = 0.7853982
+
+[node name="Label" type="Label" parent="ColorRect"]
+layout_mode = 1
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -212.20001
-offset_top = -28.799988
-offset_right = -29.200012
-offset_bottom = -16.799988
-grow_horizontal = 0
-grow_vertical = 0
+offset_left = 6.0
+offset_top = 3.0
+offset_right = 63.0
+offset_bottom = 11.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.435, 0.435)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "what's the plan?"
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
+material = SubResource("ShaderMaterial_q6xfg")
+anchors_preset = -1
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -185.0
+offset_right = 188.0
+offset_bottom = -0.14526367
+size_flags_horizontal = 8
+size_flags_vertical = 0
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
+transparent_bg = true
+handle_input_locally = false
+anisotropic_filtering_level = 0
+canvas_cull_mask = 4293918720
+size = Vector2i(188, 184)
+render_target_update_mode = 4
+
+[node name="ViewportCamera" type="Camera3D" parent="SubViewportContainer/SubViewport"]
+unique_name_in_owner = true
+cull_mask = 2
+environment = ExtResource("2_448qv")
+projection = 2
+current = true
+fov = 72.8
+size = 0.093

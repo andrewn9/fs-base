@@ -10,7 +10,7 @@ config_version=5
 
 [application]
 
-config/name="Friendslop-base"
+config/name="factory game"
 run/main_scene="uid://cdfssaxha5tn3"
 config/features=PackedStringArray("4.5", "C#", "Forward Plus")
 config/icon="res://icon.svg"
@@ -23,14 +23,18 @@ Network="*res://globals/Network.cs"
 
 [display]
 
-window/size/viewport_width=576
-window/size/viewport_height=324
-window/stretch/aspect="ignore"
+window/size/always_on_top=true
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
 window/vsync/vsync_mode=3
 
 [dotnet]
 
 project/assembly_name="Friendslop-base"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/jigglebones/plugin.cfg")
 
 [input]
 
@@ -74,7 +78,3 @@ Grab={
 
 3d/physics_engine="Jolt Physics"
 common/physics_interpolation=true
-
-[rendering]
-
-textures/canvas_textures/default_texture_filter=0

@@ -40,6 +40,12 @@ public partial class Character : Node3D
         animationPlayer = GetNode<AnimationPlayer>("CharacterBody3D/Model/AnimationPlayer");
         movement = controller as Movement;
         client = GetNode<Client>("/root/Client");
+
+        if (IsMultiplayerAuthority())
+        {
+            Hud hud = GetParent().FindChild("HUD") as Hud;
+            hud.playerMarker = FindChild("Headshot", true) as Marker3D;
+        }
     }
     // Called by local client to send input to server
     public void SendInput(Vector2 moveDir, Vector3 lookVec)

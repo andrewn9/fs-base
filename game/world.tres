@@ -1,0 +1,8 @@
+[gd_resource type="Environment" format=3 uid="uid://duaw2w1ctlsnk"]
+
+[resource]
+glow_intensity = 2.6
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.0063
+volumetric_fog_emission = Color(1, 1, 1, 1)
+volumetric_fog_length = 234.66

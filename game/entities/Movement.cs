@@ -4,17 +4,22 @@ public partial class Movement : CharacterBody3D
 {
     private Camera3D camera;
     private const float Speed = 3.0f;
-    private const float JumpVelocity = 4.5f;
+    private const float JumpVelocity = 2.5f;
     public bool controlled = false;
     public bool canJump = false;
+    public bool isGrounded => IsOnFloor();
     private Vector3 _lookVector = Vector3.Zero;
+    [Export]
+    public float camXMin = -Mathf.Pi / 3;
+    [Export]
+    public float camXMax = Mathf.Pi / 2;
     public Vector3 LookVector
     {
         get => _lookVector;
         set
         {
             _lookVector = value;
-            _lookVector.X = Mathf.Clamp(_lookVector.X, -Mathf.Pi / 2, Mathf.Pi / 2);
+            _lookVector.X = Mathf.Clamp(_lookVector.X,  camXMin, camXMax);
             Rotation = new Vector3(Rotation.X, _lookVector.Y, Rotation.Z);
             camera.Rotation = new Vector3(_lookVector.X, camera.Rotation.Y, camera.Rotation.Z);
         }

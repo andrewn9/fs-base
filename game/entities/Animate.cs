@@ -20,7 +20,7 @@ public partial class Animate : Node3D
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
 	{
-		if (movement.Velocity.Length() > 0.3f)
+		if (movement.Velocity.Length() > 0.3f && movement.isGrounded)
 		{
 			if (!animationPlayer.IsPlaying() || animationPlayer.CurrentAnimation != "Run")
 			{

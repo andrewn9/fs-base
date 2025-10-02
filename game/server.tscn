@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://duogwgm21d2x3"]
+[gd_scene load_steps=3 format=3 uid="uid://duogwgm21d2x3"]
 
 [ext_resource type="Script" uid="uid://cg6t857p1yp17" path="res://game/Server.cs" id="1_nxwuo"]
+[ext_resource type="PackedScene" uid="uid://dnr40iy02t1t0" path="res://game/hud.tscn" id="2_34u3y"]
 
 [node name="Server" type="Node3D"]
 script = ExtResource("1_nxwuo")
@@ -10,3 +11,5 @@ spawn_path = NodePath("..")
 
 [node name="CharacterSpawner" type="MultiplayerSpawner" parent="."]
 spawn_path = NodePath("..")
+
+[node name="HUD" parent="." instance=ExtResource("2_34u3y")]

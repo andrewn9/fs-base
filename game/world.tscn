@@ -1,12 +1,11 @@
-[gd_scene load_steps=15 format=3 uid="uid://pm7bbtq72irj"]
+[gd_scene load_steps=13 format=3 uid="uid://pm7bbtq72irj"]
 
 [ext_resource type="PackedScene" uid="uid://bqnh7espkihvs" path="res://game/map.tscn" id="1_f3sb7"]
 [ext_resource type="Script" uid="uid://4mfbowtxi056" path="res://game/World.cs" id="1_fhh06"]
 [ext_resource type="PackedScene" uid="uid://dfjc3ipl7j66y" path="res://blend/box.blend" id="2_0q2ew"]
 [ext_resource type="Material" uid="uid://1dq78khd15jk" path="res://blend/mat/white_brick.tres" id="3_805w3"]
 [ext_resource type="PackedScene" uid="uid://delu2qjrw6teu" path="res://ext/addons/Mirror3D/Mirror3D.tscn" id="3_tvmmn"]
-[ext_resource type="PackedScene" uid="uid://b16vc4vs2cpuf" path="res://blend/construct.blend" id="4_4xpgs"]
-[ext_resource type="PackedScene" uid="uid://dnr40iy02t1t0" path="res://game/hud.tscn" id="4_m4twg"]
+[ext_resource type="PackedScene" uid="uid://d0ax7ffeuab87" path="res://construct.tscn" id="5_fhh06"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ibklf"]
 size = Vector3(0.6, 0.6, 0.6)
@@ -18,13 +17,6 @@ properties/0/replication_mode = 2
 properties/1/path = NodePath(".:position")
 properties/1/spawn = true
 properties/1/replication_mode = 2
-
-[sub_resource type="Environment" id="Environment_4xpgs"]
-glow_intensity = 2.6
-volumetric_fog_enabled = true
-volumetric_fog_density = 0.0063
-volumetric_fog_emission = Color(1, 1, 1, 1)
-volumetric_fog_length = 234.66
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_4kaam"]
 
@@ -41,7 +33,7 @@ size = Vector3(25.224, 0.19274902, 31.777988)
 script = ExtResource("1_fhh06")
 
 [node name="Box" type="RigidBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -21.735449, -4.1782265, 9.3592)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.440361, 1.2808881, 3.165721)
 axis_lock_angular_x = true
 axis_lock_angular_y = true
 axis_lock_angular_z = true
@@ -54,25 +46,14 @@ shape = SubResource("BoxShape3D_ibklf")
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="Box"]
 replication_config = SubResource("SceneReplicationConfig_6ib04")
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_4xpgs")
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(-0.8660254, -0.19857398, 0.45887738, 0, 0.91775465, 0.3971479, -0.50000006, 0.34394017, -0.79479885, 0, 3.2494931, 0)
-shadow_enabled = true
-shadow_blur = 0.474
-sky_mode = 1
-
 [node name="map" parent="." instance=ExtResource("1_f3sb7")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.3256025, 0)
-
-[node name="CanvasLayer" parent="." instance=ExtResource("4_m4twg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.12373543, 0)
 
 [node name="Mirror3D1" parent="." instance=ExtResource("3_tvmmn")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -23.407686, -4.169388, 4.6425714)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -23.407686, -1.7200499, 4.6425714)
+visible = false
 size = Vector2(16.625, 3.7)
-pixels_per_unit = 100
-use_linear_filter = false
+pixels_per_unit = 150
 color = Color(1, 1, 1, 1)
 distortion_texture = SubResource("NoiseTexture2D_4xpgs")
 cull_near = 0.105
@@ -80,59 +61,13 @@ cull_far = 25.99
 freeze_distance = 23.395
 max_fps = 180.0
 
-[node name="construct" parent="." instance=ExtResource("4_4xpgs")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.9696722, -7.7411327, 5.580286)
-
-[node name="Lights" type="Node" parent="."]
-
-[node name="OmniLight3D" type="OmniLight3D" parent="Lights"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.737892, -2.517667, 19.112797)
-light_color = Color(1, 0.92947316, 0.8400777, 1)
-light_energy = 5.517
-shadow_enabled = true
-shadow_blur = 5.641
-omni_range = 37.593
-
-[node name="OmniLight3D2" type="OmniLight3D" parent="Lights"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30.89976, -2.4421492, 24.9304)
-light_color = Color(1, 0.92947316, 0.8400777, 1)
-light_energy = 5.517
-light_bake_mode = 1
-shadow_enabled = true
-shadow_blur = 5.641
-omni_range = 8.7753105
-
-[node name="OmniLight3D3" type="OmniLight3D" parent="Lights"]
-transform = Transform3D(1, 0, 0, 0, 0.9999968, 0.002548178, 0, -0.002548178, 0.9999968, -15.735065, -2.4152308, 5.190976)
-light_color = Color(1, 0.92947316, 0.8400777, 1)
-light_energy = 5.517
-shadow_enabled = true
-shadow_blur = 5.641
-omni_range = 9.001
-omni_attenuation = 0.721
-
-[node name="OmniLight3D5" type="OmniLight3D" parent="Lights"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -31.017084, -2.4533498, 5.0763006)
-light_color = Color(1, 0.92947316, 0.8400777, 1)
-light_energy = 5.517
-shadow_enabled = true
-shadow_blur = 5.641
-omni_range = 355.191
-omni_attenuation = 0.721
-
-[node name="OmniLight3D6" type="OmniLight3D" parent="Lights"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -24.51161, -2.4649024, 6.159654)
-light_color = Color(1, 0.92947316, 0.8400777, 1)
-light_energy = 5.517
-shadow_enabled = true
-shadow_blur = 5.641
-omni_range = 1486.361
-omni_attenuation = 0.477
+[node name="construct" parent="." instance=ExtResource("5_fhh06")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.6504726, -5.345487, 5.539611)
 
 [node name="Spawns" type="Node" parent="."]
 
 [node name="Spawn" type="Node3D" parent="Spawns"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.188606, -5.4969683, 13.244667)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.106495, 0.71739817, -2.3550615)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Spawns/Spawn"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.34353113, 0.5771189)
@@ -140,11 +75,16 @@ material_override = ExtResource("3_805w3")
 mesh = SubResource("PlaneMesh_fhh06")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.674927, -2.7227378, 7.622366)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.674927, -0.27339983, 7.622366)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
 transform = Transform3D(1.0000004, 1.3038516e-08, 0, 2.4214387e-08, 1.0000033, 2.3283064e-10, 1.4901161e-08, 5.1688403e-08, 1, -2.6120605, 0.29266453, 2.8621044)
 shape = SubResource("BoxShape3D_fhh06")
 debug_color = Color(0.68889445, 0.29013556, 1, 1)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.86688805, 0.42060125, 0.26758125, 0, -0.5367697, 0.84372884, 0.49850288, -0.73141843, -0.46531925, 0, 10.438381, -11.840681)
+light_bake_mode = 1
+shadow_enabled = true
 
 [editable path="Box/box"]

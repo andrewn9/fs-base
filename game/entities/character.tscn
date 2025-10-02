@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://c5otnp5hf2eri"]
+[gd_scene load_steps=15 format=3 uid="uid://c5otnp5hf2eri"]
 
 [ext_resource type="Script" uid="uid://bxo6um3ah2lg8" path="res://game/entities/Character.cs" id="1_dki1m"]
 [ext_resource type="Script" uid="uid://djd5fd0fuo7ti" path="res://game/entities/Movement.cs" id="2_q0wq5"]
@@ -10,6 +10,7 @@
 [ext_resource type="Script" uid="uid://3hwi6jgt50jt" path="res://game/entities/IkController.cs" id="5_ek110"]
 [ext_resource type="Material" uid="uid://bgeypuyurkmsl" path="res://blend/dither.material" id="5_nuf5p"]
 [ext_resource type="Texture2D" uid="uid://bx2wha4du01ma" path="res://blend/tex/HatTexture_Baked.png" id="6_700m2"]
+[ext_resource type="Script" uid="uid://cq8bxw6o068tr" path="res://addons/jigglebones/jigglebone.gd" id="8_700m2"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_5p5ai"]
 render_priority = 0
@@ -37,6 +38,8 @@ script = ExtResource("1_dki1m")
 
 [node name="CharacterBody3D" type="CharacterBody3D" parent="."]
 script = ExtResource("2_q0wq5")
+camXMin = -1.381
+camXMax = 1.081
 Mass = 100.0
 PushForceScalar = 0.25
 CameraBobSideAmplitude = 0.035
@@ -46,14 +49,34 @@ CameraBobLandAmplitude = -0.7
 script = ExtResource("4_nuf5p")
 
 [node name="Skeleton3D" parent="CharacterBody3D/Model" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.043233544)
+bones/1/position = Vector3(0, 0.040032424, 0)
 bones/2/rotation = Quaternion(0, 0, 0, 1)
-bones/4/scale = Vector3(1, 0.9379271, 1)
-bones/9/scale = Vector3(1, 0.8607978, 1)
+bones/4/scale = Vector3(1, 0.95069605, 1)
+bones/6/rotation = Quaternion(0.010505853, 0.064604804, 0.9973796, -0.030820914)
+bones/7/rotation = Quaternion(-0.11807578, -0.0024924253, -0.029989552, 0.99254847)
+bones/8/rotation = Quaternion(0.69953966, 0.011959414, -0.008614206, 0.7144418)
+bones/9/scale = Vector3(1, 0.87175274, 1)
+bones/11/rotation = Quaternion(-0.010505726, 0.06460387, 0.9973796, 0.030820755)
+bones/11/scale = Vector3(0.9999975, 0.9999996, 0.9999885)
+bones/12/rotation = Quaternion(-0.1180742, 0.0024923286, 0.02998906, 0.99254876)
+bones/13/rotation = Quaternion(0.6995393, -0.011958929, 0.008614185, 0.71444213)
+bones/15/position = Vector3(-0.075171866, -0.28879577, 0.0015263893)
+bones/15/rotation = Quaternion(0.70710665, -0.00047333405, -0.00047305392, 0.70710665)
+bones/16/position = Vector3(0.07494567, -0.12513697, -0.23117475)
+bones/17/position = Vector3(0.075171866, -0.28879577, 0.0015264121)
+bones/17/rotation = Quaternion(0.70710665, 0.00047305392, 0.00047333405, 0.70710665)
+bones/18/position = Vector3(-0.05193397, 0.049488828, 0.07284561)
+bones/19/position = Vector3(0.05193397, 0.049488828, 0.07284561)
 
 [node name="Hat" parent="CharacterBody3D/Model/Skeleton3D" index="0"]
+layers = 2
+instance_shader_parameters/Dither = false
 surface_material_override/0 = SubResource("ShaderMaterial_5p5ai")
 
 [node name="IDontGetPaidEnoughForThis Remeshed" parent="CharacterBody3D/Model/Skeleton3D" index="1"]
+layers = 3
+instance_shader_parameters/Dither = false
 surface_material_override/0 = ExtResource("5_nuf5p")
 
 [node name="RightArm" type="LookAtModifier3D" parent="CharacterBody3D/Model/Skeleton3D" index="2"]
@@ -74,6 +97,27 @@ forward_axis = 2
 primary_rotation_axis = 0
 origin_offset = Vector3(-0.035, -0.04, 0)
 
+[node name="Node3D" type="Node3D" parent="CharacterBody3D/Model/Skeleton3D" index="4"]
+transform = Transform3D(0.9982593, -0.05894898, -0.0018296781, -0.05887367, -0.99418485, -0.09016546, 0.0034961249, 0.090116225, -0.99592483, -0.04993678, 0.4402151, 1.0255382)
+top_level = true
+script = ExtResource("8_700m2")
+bone_name = "Cheek.L"
+stiffness = 0.4
+damping = 2.2
+gravity = Vector3(0, -9.357, 0)
+
+[node name="Node3D2" type="Node3D" parent="CharacterBody3D/Model/Skeleton3D" index="5"]
+transform = Transform3D(0.99825865, 0.058948945, 0.0021699949, 0.05890431, -0.99418294, -0.090165436, -0.0031577873, 0.09013624, -0.9959242, 0.04993678, 0.44021532, 1.0255382)
+top_level = true
+script = ExtResource("8_700m2")
+bone_name = "Cheek.R"
+stiffness = 0.4
+damping = 2.2
+gravity = Vector3(0, -9.357, 0)
+
+[node name="AnimationPlayer" parent="CharacterBody3D/Model" index="1"]
+speed_scale = 1.104
+
 [node name="IKController" type="Node" parent="CharacterBody3D/Model" node_paths=PackedStringArray("skeleton", "LeftArmLookAt", "RightArmLookAt", "LeftHandMarker", "RightHandMarker")]
 script = ExtResource("5_ek110")
 skeleton = NodePath("../Skeleton3D")
@@ -89,10 +133,10 @@ upperArmL = 4
 handL = 5
 
 [node name="RightArm" type="Marker3D" parent="CharacterBody3D/Model/IKController"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.24025452, 0.50258535, -0.030281156)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.24025452, 0.5130493, -0.030281156)
 
 [node name="LeftArm" type="Marker3D" parent="CharacterBody3D/Model/IKController"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.25717872, 0.51542753, -0.03804034)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.25717872, 0.538031, -0.03804034)
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="CharacterBody3D/Model/IKController"]
 delta_interval = 0.06
@@ -102,11 +146,12 @@ replication_config = SubResource("SceneReplicationConfig_7xs2g")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.42930603, 0)
 shape = SubResource("CapsuleShape3D_it3p1")
 
-[node name="Camera3D" type="Camera3D" parent="CharacterBody3D" node_paths=PackedStringArray("_meshInstances")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.626, -0.12466496)
+[node name="Camera3D" type="Camera3D" parent="CharacterBody3D" node_paths=PackedStringArray("skeleton")]
+transform = Transform3D(1, 0, 0, 0, 0.99999994, 0, 0, 0, 0.99999994, 0, 0.626, -0.12466496)
 fov = 90.0
+size = 0.561
 script = ExtResource("4_q0wq5")
-_meshInstances = [NodePath("../Model/Skeleton3D/IDontGetPaidEnoughForThis Remeshed"), NodePath("../Model/Skeleton3D/Hat")]
+skeleton = NodePath("../Model/Skeleton3D")
 
 [node name="Grab" type="Node" parent="CharacterBody3D"]
 script = ExtResource("4_ek110")
@@ -117,5 +162,8 @@ billboard = 1
 shaded = true
 text = "{username}"
 font_size = 22
+
+[node name="Headshot" type="Marker3D" parent="CharacterBody3D"]
+transform = Transform3D(-1, 0, 8.742278e-08, 1.438778e-09, 0.9998646, 0.016457707, -8.741094e-08, 0.016457707, -0.9998646, 0, 0.663259, -0.4335804)
 
 [editable path="CharacterBody3D/Model"]
